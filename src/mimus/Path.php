@@ -127,7 +127,9 @@ namespace mimus {
 						$this->executes->call($object, ...$args) :
 						($this->executes)(...$args);
 				}
+
 			} catch (\Throwable $thrown) {
+
 				if ($this->throws) {
 					try {
 						$this->verifyException($thrown);
@@ -144,7 +146,7 @@ namespace mimus {
 					$this->verifyException(null);
 				}
 
-				if ($this->returns) {
+				if (isset($this->returns)) {
 					$this->verifyReturn($retval);
 				}
 
