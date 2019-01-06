@@ -1,0 +1,20 @@
+{
+    "name": "krakjoe/mimus",
+    "require": {
+        "php": "7.*",
+        "ext-componere": "^2.1.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "mimus\\": "src/mimus"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "mimus\\tests\\": "tests/"
+        }
+    }
+}
