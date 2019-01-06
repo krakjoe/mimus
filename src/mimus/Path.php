@@ -114,7 +114,6 @@ namespace mimus {
 
 		public function travel(object $object, \Closure $prototype, ...$args) {
 			$except = null;
-			$try    = null;
 			$retval = null;
 			try {
 				if ($this->executes === false) {
@@ -125,13 +124,11 @@ namespace mimus {
 					$retval = $this->executes->call($object, ...$args);
 				}
 			} catch (\Throwable $thrown) {
-				var_dump((string)$thrown);
-				if ($try && $try->hasException()) {
+				if ($this->throws) {
 					try {
-						$try->verifyException($thrown);
+						$this->verifyException($thrown);
 					} catch (Exception $ex) {
 						$except = $ex;
-						$try    = null;
 					}
 				}
 			} finally {
@@ -139,17 +136,16 @@ namespace mimus {
 					throw $except;
 				}
 
-				if ($try) {
-					if ($try->hasException()) {
-						$try->verifyException(null);
-					}
-
-					$try->verifyReturn($retval);
+				if ($this->throws) {
+					$this->verifyException(null);
 				}
+
+				if ($this->returns) {
+					$this->verifyReturn($retval);
+				}
+
 				return $retval;
 			}
-
-			
 		}
 
 		private $accepts;

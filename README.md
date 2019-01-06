@@ -54,6 +54,7 @@ namespace mimus {
 		* @param Closure
 		* 	If no Closure is passed, the original method is allowed to execute
 		*	If a Closure is passed, it is executed in place of the original method
+		* Note: if this method is not called, nothing is executed for this path
 		*/
 		public function executes(Closure $closure = null) : Expectation;
 		/*
