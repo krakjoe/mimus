@@ -56,17 +56,17 @@ namespace mimus {
 		*	If a Closure is passed, it is executed in place of the original method
 		* Note: if this method is not called, nothing is executed for this path
 		*/
-		public function executes(Closure $closure = null) : Expectation;
+		public function executes(Closure $closure = null) : Path;
 		/*
 		* Shall tell mimus what this path should (or will) return
 		* @param mixed
 		*/
-		public function returns($value) : Expectation;
+		public function returns($value) : Path;
 		/*
 		* Shall tell mimus what this path should throw
 		* @param string the name of the exception expected
 		*/
-		public function throws(string $class) : Expectation;
+		public function throws(string $class) : Path;
 	}
 }
 ```
