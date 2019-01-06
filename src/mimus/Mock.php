@@ -38,7 +38,7 @@ namespace mimus {
 				$prototype = $this->reflector->getMethod($name);
 				$table     = $this->table[$name] ?? null;
 
-				$this->definition->addMethod($name, $implementation = new Method(function(...$args) use($name, $closure, $table) {
+				$this->definition->addMethod($name, $implementation = new Method(function(...$args) use($name, $closure, $prototype, $table) {
 					$except = null;
 					$path    = null;
 
@@ -61,6 +61,10 @@ namespace mimus {
 
 					if ($except) {
 						throw $except;
+					}
+
+					if (!$prototype || $prototype->isStatic()) {
+						return $path->travel(null, $closure, ...$args);
 					}
 
 					return $path->travel($this, $closure, ...$args);

@@ -112,16 +112,20 @@ namespace mimus {
 			return true;
 		}
 
-		public function travel(object $object, \Closure $prototype, ...$args) {
+		public function travel(?object $object, \Closure $prototype, ...$args) {
 			$except = null;
 			$retval = null;
 			try {
 				if ($this->executes === false) {
 					$retval = $this->returns;
 				} else if ($this->executes === true) {
-					$retval = $prototype->call($object, ...$args);
+					$retval = $object ? 
+						$prototype->call($object, ...$args) :
+						$prototype(...$args);
 				} else {
-					$retval = $this->executes->call($object, ...$args);
+					$retval = $object ? 
+						$this->executes->call($object, ...$args) :
+						($this->executes)(...$args);
 				}
 			} catch (\Throwable $thrown) {
 				if ($this->throws) {
