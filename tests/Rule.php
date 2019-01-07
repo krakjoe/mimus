@@ -6,11 +6,13 @@ namespace mimus\tests {
 		public function testExpectationAlreadySet() {
 			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
 
+			$rule = $mock->rule("publicMethod");
+			
+			$rule->expects(true);
+
 			$this->expectException(\LogicException::class);
 
-			$mock->rule("publicMethod")
-				->expects(true)
-				->expects(true);
+			$rule->expects(true);
 		}
 	}
 }
