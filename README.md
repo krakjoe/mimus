@@ -21,20 +21,20 @@ namespace mimus {
 		/*
 		* Shall create a new Rule for method in this builder
 		* @param string the name of the method
+		* @throws LogicException if the method does not exist
 		*/
 		public function rule(string $method) : Rule;
 
 		/*
 		* Shall return an object of the mocked type
-		* @param bool controls registration of the class
 		*/
 		public function getMock() : object;
 
 		/*
 		* Shall return an object of the mocked type, having invoked it's constructor
-		* @param bool controls registration of the class
+		* @param args to pass to constructor
 		*/
-		public function getMockConstructed() : object;
+		public function getMockConstructed(...$args) : object;
 
 		/*
 		* Shall clear all the rules for the given method
@@ -57,7 +57,7 @@ namespace mimus {
 		* @param Closure
 		* 	If no Closure is passed, the original method is allowed to execute
 		*	If a Closure is passed, it is executed in place of the original method
-		* Note: if this method is not called, nothing is executed for this path
+		* Note: If Path::executes is not invoked, nothing will be executed for this Path
 		*/
 		public function executes(Closure $closure = null) : Path;
 		/*
@@ -67,15 +67,19 @@ namespace mimus {
 		*	match the runtime return value.
 		*	If this path does not execute, the return value is used as the
 		*	runtime return value.
+		* Note: If Path::returns is not invoked, any return is allowed for this Path
+		* @throws LogicException if this Path is void
 		*/
 		public function returns($value) : Path;
 		/*
 		* Shall tell mimus that this path should be void (not return anything)
+		* @throws LogicException if this Path returns
 		*/
 		public function void() : Path;
 		/*
 		* Shall tell mimus what this path should throw
 		* @param string the name of the exception expected
+		* Note: If Path::throws is not invoked, any exception is allowed for this Path
 		*/
 		public function throws(string $class) : Path;
 	}

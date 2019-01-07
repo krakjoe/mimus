@@ -196,9 +196,10 @@ namespace mimus {
 						$this->executes->call($object, ...$args) :
 						($this->executes)(...$args);
 				}
-
 			} catch (\Throwable $thrown) {
-				$this->verifyException($thrown);
+				if ($this->throws) {
+					$this->verifyException($thrown);
+				}
 
 				throw $thrown;
 			}
