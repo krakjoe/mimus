@@ -306,5 +306,48 @@ namespace mimus\tests {
 
 			$this->assertNull($object->publicMethod(true));
 		}
+
+		public function testValidatorsFail() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+
+			$mock->rule("publicMethod")
+				->expects()
+				->executes()
+				->validates(new class implements \mimus\Validator {
+				public function getName() : string {
+					return "test validator";
+				}
+
+				public function validate(\mimus\Path $path, object $object = null, $retval = null) : bool {
+					return false;
+				}
+			});
+
+			$object = $mock->getInstance();
+
+			$this->expectException(\mimus\Exception::class);
+			$this->assertTrue($object->publicMethod(true));
+		}
+
+		public function testValidatorsSuccess() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+
+			$mock->rule("publicMethod")
+				->expects()
+				->returns(true)
+				->validates(new class implements \mimus\Validator {
+				public function getName() : string {
+					return "test validator";
+				}
+
+				public function validate(\mimus\Path $path, object $object = null, $retval = null) : bool {
+					return true;
+				}
+			});
+
+			$object = $mock->getInstance();
+
+			$this->assertTrue($object->publicMethod(true));
+		}
 	}
 }

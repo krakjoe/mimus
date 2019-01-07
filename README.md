@@ -94,6 +94,25 @@ namespace mimus {
 		* Shall tell mimus that this path should be travelled a maximum number of times
 		*/
 		public function limit(int $times) : Path;
+
+		/*
+		* Shall tell mimus to add a validator to Path
+		* Note: Validators will be executed after all other conditions before returning,
+		*	Validator::validate should return true to allow execution to continue
+		*/
+		public function validates(Validator $validator) : Path;
+	}
+
+	interface Validator {
+		/*
+		* Should return a descriptive human readable name for this validator
+		*/
+		public function getName() : string;
+
+		/*
+		* Should return boolean indication of validty
+		*/
+		public function validate(Path $path, object $object = null, $retval = null) : bool;
 	}
 }
 ```

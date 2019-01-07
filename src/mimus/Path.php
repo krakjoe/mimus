@@ -176,6 +176,29 @@ namespace mimus {
 			}
 		}
 
+		private function verifyValidators(?object $object = null, $retval = null) {
+			$except = null;
+
+			if (!$this->validators) {
+				return;
+			}
+
+			foreach ($this->validators as $validator) {
+				try {
+					if (!$validator->validate($this, $object, $retval)) {
+						throw new Exception($except,
+							"validation of %s failed",
+							$validator->getName());
+					}
+				} catch (Exception $ex) {
+					$except = $ex;
+				}
+			}
+
+			if ($except)
+				throw $except;
+		}
+
 		private function printable($value) {
 			switch (gettype($value)) {
 				case 'null':
@@ -235,7 +258,15 @@ namespace mimus {
 
 			$this->verifyReturn($retval);
 
+			$this->verifyValidators($object, $retval);
+
 			return $retval;
+		}
+
+		public function validates(Validator $validator) : Path {
+			$this->validators[] = $validator;
+
+			return $this;
 		}
 
 		private $accepts;
@@ -245,6 +276,7 @@ namespace mimus {
 		private $executes = false;
 		private $limit = false;
 		private $count = 0;
+		private $validators = [];
 	}
 
 	Path::$sentinal = new class{};
