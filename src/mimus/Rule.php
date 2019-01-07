@@ -11,7 +11,7 @@ namespace mimus {
 		public function expects(...$args) : Path {
 			if (isset($this->path)) {
 				throw new Exception(null,
-					"expectation already set for %s", $this->name);
+					"expectation already set for %s", $this->method);
 			}
 
 			return $this->path = new Path(...$args);
