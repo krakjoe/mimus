@@ -100,7 +100,7 @@ namespace mimus {
 		* Note: Validators will be executed after all other conditions before returning,
 		*	Validators will be bound to the correct object before invokation
 		*	Validators that return false will raise exceptions
-		*	Validators should have the prototype function(Path $path, $retval = null)
+		*	Validators should have the prototype function($retval = null)
 		*/
 		public function validates(\Closure $validator) : Path;
 	}

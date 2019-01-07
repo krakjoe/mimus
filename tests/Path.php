@@ -313,7 +313,7 @@ namespace mimus\tests {
 			$mock->rule("publicMethod")
 				->expects()
 				->executes()
-				->validates(function(\mimus\Path $path, $retval = null) : bool {
+				->validates(function($retval = null) : bool {
 					return false;
 				});
 
@@ -329,7 +329,7 @@ namespace mimus\tests {
 			$mock->rule("publicMethod")
 				->expects()
 				->returns(true)
-				->validates(function(\mimus\Path $path, $retval = null) : bool {
+				->validates(function($retval = null) : bool {
 					return true;
 				});
 

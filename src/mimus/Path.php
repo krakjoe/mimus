@@ -185,8 +185,8 @@ namespace mimus {
 
 			foreach ($this->validators as $idx => $validator) {
 				$result = $object ? 
-					$validator->call($object, $this, $retval) :
-					$validator($this, $retval);
+					$validator->call($object, $retval) :
+					$validator($retval);
 
 				if (!$result) {
 					$except = new Exception($except,
