@@ -3,6 +3,21 @@ namespace mimus\tests {
 
 	class Mock extends \PHPUnit\Framework\TestCase {
 
+		public function testWhiteList() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Bar::class, false, [
+				"publicMethodUntouched"
+			]);
+
+			$mock->rule("publicMethod")
+				->expects()
+				->returns(false);
+
+			$object = $mock->getInstance();
+
+			$this->assertTrue($object->publicMethodUntouched(true));
+			$this->assertFalse($object->publicMethod(true));
+		}
+
 		public function testPublicMethodExpectAndReturnTrue() {
 			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
 
