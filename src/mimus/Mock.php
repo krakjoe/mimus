@@ -5,12 +5,11 @@ namespace mimus {
 	use Componere\Method;
 
 	class Mock {
-
 		public /* please */ static /* don't look at my shame */
-			function of(string $class, bool $reset = true) {
+			function of(string $class, bool $reset = true, array $whitelist = []) {
 
 			if (!isset(Mock::$mocks[$class])) {
-				Mock::$mocks[$class] = new self($class);
+				Mock::$mocks[$class] = new self($class, $whitelist);
 			} else if ($reset) {
 				Mock::$mocks[$class]->reset();
 			}
@@ -18,7 +17,7 @@ namespace mimus {
 			return Mock::$mocks[$class];
 		}
 
-		private function __construct(string $class) {
+		private function __construct(string $class, array $whitelist = []) {
 			$this->definition = new Definition($class);
 			$this->reflector  = $this->definition->getReflector();
 
@@ -26,6 +25,10 @@ namespace mimus {
 				$name      = $prototype->getName();
 
 				$this->table[$name] = [];
+
+				if ($whitelist && in_array($name, $whitelist)) {
+					continue;
+				}
 
 				$closure   = $this->definition->getClosure($name);
 				$table     =& $this->table[$name];
@@ -84,14 +87,6 @@ namespace mimus {
 			$this->definition->register();
 		}
 
-		public function getMock() : object {
-			return $this->reflector->newInstanceWithoutConstructor();
-		}
-
-		public function getMockConstructed(...$args) : object {
-			return $this->reflector->newInstanceArgs(...$args);
-		}
-
 		public function rule(string $name) : Rule {
 			if (!isset($this->table[$name])) {
 				throw new \LogicException(
@@ -110,6 +105,13 @@ namespace mimus {
 					unset($this->table[$name][$idx]);
 				}		
 			}
+		}
+
+		public function getInstance(...$args) : object {
+			if (!func_num_args()) {
+				return $this->reflector->newInstanceWithoutConstructor();
+			}
+			return $this->reflector->newInstanceArgs(...$args);
 		}
 
 		private $definition;

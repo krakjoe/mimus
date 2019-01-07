@@ -10,7 +10,7 @@ namespace mimus\tests {
 				->expects(true)
 				->returns(true);
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 
 			$this->assertTrue($object->publicMethod(true));
 		}
@@ -22,7 +22,7 @@ namespace mimus\tests {
 				->expects(false)
 				->returns(false);
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 
 			$this->assertFalse($object->publicMethod(false));
 		}
@@ -46,7 +46,7 @@ namespace mimus\tests {
 				->expects(false)
 				->returns(false);
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 
 			$this->assertFalse($object->publicMethod(true));
 			$this->assertFalse($object->publicMethod(false));

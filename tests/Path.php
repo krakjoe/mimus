@@ -32,7 +32,7 @@ namespace mimus\tests {
 				->expects(true)
 				->executes(function(){});
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(true, true));
@@ -45,7 +45,7 @@ namespace mimus\tests {
 				->expects(\stdClass::class)
 				->executes(function(){});
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(new class{}));
@@ -58,7 +58,7 @@ namespace mimus\tests {
 				->expects(1)
 				->executes(function(){});
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(true));
@@ -70,7 +70,7 @@ namespace mimus\tests {
 				->expects(true)
 				->executes(function(){});
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(false));
@@ -86,7 +86,7 @@ namespace mimus\tests {
 				})
 				->throws(\Error::class);
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\Error::class);
 			$this->assertNull($object->publicMethod(true));
@@ -102,7 +102,7 @@ namespace mimus\tests {
 				})
 				->throws(\Error::class);
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(true));
@@ -118,7 +118,7 @@ namespace mimus\tests {
 				})
 				->returns(true);
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(true));
@@ -133,7 +133,7 @@ namespace mimus\tests {
 				})
 				->void();
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(true));
@@ -149,7 +149,7 @@ namespace mimus\tests {
 				})
 				->returns(true);
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(true));
@@ -165,7 +165,7 @@ namespace mimus\tests {
 				})
 				->returns(stdClass::class);
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(true));
@@ -181,7 +181,7 @@ namespace mimus\tests {
 				})
 				->returns(\stdClass::class);
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->assertTrue($object->publicMethod(true) instanceof \stdClass);
 		}
@@ -196,7 +196,7 @@ namespace mimus\tests {
 				})
 				->returns(true);
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(true));
@@ -212,7 +212,7 @@ namespace mimus\tests {
 				})
 				->returns("mimus");
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->assertSame("mimus", $object->publicMethod());
 		}
@@ -232,7 +232,7 @@ namespace mimus\tests {
 				})
 				->returns("mimus");
 
-			$object = $mock->getMock();
+			$object = $mock->getInstance();
 			
 			$this->assertSame("mimus", $object->publicMethod());
 		}

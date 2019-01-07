@@ -15,8 +15,9 @@ namespace mimus {
 		* Shall create or return Mock builder for $class
 		* @param string the name of the class to mock
 		* @param string optionally prohibit resetting rules
+		* @param array whitelist of method names to execute as implemented (results in partial mock)
 		*/
-		public static function of(string $class, bool $reset = true);
+		public static function of(string $class, bool $reset = true, array $whitelist = []);
 
 		/*
 		* Shall create a new Rule for method in this builder
@@ -26,22 +27,17 @@ namespace mimus {
 		public function rule(string $method) : Rule;
 
 		/*
-		* Shall return an object of the mocked type
-		*/
-		public function getMock() : object;
-
-		/*
-		* Shall return an object of the mocked type, having invoked it's constructor
-		* @param args to pass to constructor
-		*/
-		public function getMockConstructed(...$args) : object;
-
-		/*
 		* Shall clear all the rules for the given method
 		* @param string the name of a method, or null
 		* Note: if method is null, rules for all methods are reset
 		*/
 		public function reset(string $method = null);
+
+		/*
+		* Shall return an object of the mocked type
+		* Note: if not arguments are passed, no constructor is invoked
+		*/
+		public function getInstance(...$args) : object;
 	}
 
 	class Rule {
