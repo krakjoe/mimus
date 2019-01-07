@@ -79,6 +79,21 @@ namespace mimus {
 		* Note: If Path::throws is not invoked, any exception is allowed for this Path
 		*/
 		public function throws(string $class) : Path;
+
+		/*
+		* Shall tell mimus that this path should never be travelled
+		*/
+		public function never() : Path;
+		
+		/*
+		* Shall tell mimus that this path should only be travelled once
+		*/
+		public function once() : Path;
+
+		/*
+		* Shall tell mimus that this path should be travelled a maximum number of times
+		*/
+		public function limit(int $times) : Path;
 	}
 }
 ```

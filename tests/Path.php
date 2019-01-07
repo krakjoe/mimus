@@ -231,7 +231,7 @@ namespace mimus\tests {
 
 			$object = $mock->getInstance();
 			
-			$this->assertSame("mimus", $object->publicMethod());
+			$this->assertSame("mimus", $object->publicMethod(true));
 		}
 
 		public function testExpectsAnyFallback() {
@@ -251,7 +251,60 @@ namespace mimus\tests {
 
 			$object = $mock->getInstance();
 			
-			$this->assertSame("mimus", $object->publicMethod());
+			$this->assertSame("mimus", $object->publicMethod(true));
+		}
+
+		public function testLimitToOnce() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+
+			$mock->rule("publicMethod")
+				->expects()
+				->executes(function(){
+					return true;	
+				})
+				->once();
+
+			$object = $mock->getInstance();
+			
+			$this->assertTrue($object->publicMethod(true));
+			$this->expectException(\mimus\Exception::class);
+			$this->assertTrue($object->publicMethod(true));
+		}
+
+		public function testLimitToNever() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+
+			$mock->rule("publicMethod")
+				->expects()
+				->executes(function(){
+					return true;	
+				})
+				->never();
+
+			$object = $mock->getInstance();
+			$this->expectException(\mimus\Exception::class);
+			$this->assertNull($object->publicMethod(true));
+
+		}
+
+		public function testLimitToN() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+
+			$mock->rule("publicMethod")
+				->expects()
+				->executes(function(){
+					return true;	
+				})
+				->limit(2);
+
+			$object = $mock->getInstance();
+
+			$this->assertTrue($object->publicMethod(true));
+			$this->assertTrue($object->publicMethod(true));
+
+			$this->expectException(\mimus\Exception::class);
+
+			$this->assertNull($object->publicMethod(true));
 		}
 	}
 }

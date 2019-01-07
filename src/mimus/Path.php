@@ -45,6 +45,24 @@ namespace mimus {
 			return $this;
 		}
 
+		public function never() : Path {
+			$this->limit = true;
+
+			return $this;
+		}
+
+		public function once() : Path {
+			$this->limit = 1;
+
+			return $this;
+		}
+
+		public function limit(int $times) : Path {
+			$this->limit = $times;
+
+			return $this;
+		}
+
 		public function try(?Exception $except, bool $count, ...$args) : bool {
 			if ($this->accepts == Path::$sentinal) {
 				return true;
@@ -184,6 +202,13 @@ namespace mimus {
 		public function travel(?object $object, \Closure $prototype, ...$args) {
 			$retval = null;
 			$thrown = null;
+			if ($this->limit !== false) {
+				if ($this->limit === true ||
+				    ++$this->count > $this->limit) {
+					throw new Exception(null,
+						"limit of %d exceeded", $this->limit);
+				}
+			}
 			try {
 				if ($this->executes === false) {
 					$retval = $this->returns;
@@ -218,6 +243,8 @@ namespace mimus {
 		private $void;
 		private $throws;
 		private $executes = false;
+		private $limit = false;
+		private $count = 0;
 	}
 
 	Path::$sentinal = new class{};
