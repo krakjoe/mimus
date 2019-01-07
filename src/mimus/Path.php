@@ -2,9 +2,11 @@
 namespace mimus {
 	
 	class Path {
+		public static $sentinal;
 
 		public function __construct(...$accepts) {
 			$this->accepts = $accepts;
+			$this->returns = Path::$sentinal;
 		}
 
 		public function executes(\Closure $body = null) : Path {
@@ -17,6 +19,12 @@ namespace mimus {
 
 		public function returns($value) : Path {
 			$this->returns = $value;
+
+			return $this;
+		}
+
+		public function void() : Path {
+			$this->void    = true;
 
 			return $this;
 		}
@@ -91,16 +99,21 @@ namespace mimus {
 			return true;
 		}
 
-		private function verifyReturn($value = null) : bool {
+		private function verifyReturn($value = null) {
+			if ($this->void && $value !== null) {
+				throw new Exception(null,
+					"return value not expected, got %s",
+					$this->printable($value));
+			}
+
+			if ($this->returns === self::$sentinal) {
+				return;
+			}
+
 			if ($this->returns && $value === null) {
 				throw new Exception(null,
 					"return value expected to be of type %s, got null",
 					gettype($this->returns));
-			}
-
-			if ($this->returns === null && $value) {
-				throw new Exception(null,
-					"return value not expected, got null");
 			}
 
 			if (gettype($this->returns) != gettype($value)) {
@@ -120,7 +133,7 @@ namespace mimus {
 							gettype($value) == 'object' ? 
 								get_class($value) : gettype($value));
 				}
-				return true;
+				return;
 			}
 
 			if ($value !== $this->returns) {
@@ -129,8 +142,6 @@ namespace mimus {
 						$this->printable($this->returns),
 						$this->printable($value));
 			}
-
-			return true;
 		}
 
 		private function printable($value) {
@@ -157,8 +168,8 @@ namespace mimus {
 		}
 
 		public function travel(?object $object, \Closure $prototype, ...$args) {
-			$except = null;
 			$retval = null;
+			$thrown = null;
 			try {
 				if ($this->executes === false) {
 					$retval = $this->returns;
@@ -173,33 +184,26 @@ namespace mimus {
 				}
 
 			} catch (\Throwable $thrown) {
-				if ($this->throws) {
-					try {
-						$this->verifyException($thrown);
-					} catch (Exception $ex) {
-						$except = $ex;
-					}
-				}
-			} finally {
-				if ($except) {
-					throw $except;
-				}
+				$this->verifyException($thrown);
 
-				if ($this->throws) {
-					$this->verifyException(null);
-				}
-
-				if (isset($this->returns)) {
-					$this->verifyReturn($retval);
-				}
-
-				return $retval;
+				throw $thrown;
 			}
+
+			if ($this->throws) {
+				$this->verifyException(null);
+			}
+
+			$this->verifyReturn($retval);
+
+			return $retval;
 		}
 
 		private $accepts;
 		private $returns;
+		private $void;
 		private $throws;
 		private $executes = false;
 	}
+
+	Path::$sentinal = new class{};
 }
