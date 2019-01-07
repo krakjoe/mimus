@@ -39,13 +39,14 @@ namespace mimus {
 				$got      = gettype($args[$idx]);
 
 				if (($expected == 'string' || $expected == 'object') && is_object($args[$idx])) {
-					if (!$args[$idx] instanceof $expected) {
+					if (!$args[$idx] instanceof $arg) {
 						throw new Exception($except,
-							"argument %d expected to be of class %s got %s",
+							"argument %d expected to be %s got %s",
 							$idx,
-							$this->accepts[$idx],
-							get_class($arg));
+							$this->printable($arg),
+							$this->printable($args[$idx]));
 					}
+					return true;
 				}
 
 				if ($expected != $got) {
@@ -143,6 +144,8 @@ namespace mimus {
 				case 'double':
 					return sprintf("float(%f)", $value);
 				case 'string': /* TODO limit length */
+					if (class_exists($value, 0))
+						return $value;
 					return sprintf("string(%d) \"%s\"", strlen($value), $value);
 				case 'array': /* TODO limit length */
 					return sprintf("array(%d)[%s]", count($value), implode(', ', $value));
