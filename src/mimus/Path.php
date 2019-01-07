@@ -46,7 +46,7 @@ namespace mimus {
 							$this->printable($arg),
 							$this->printable($args[$idx]));
 					}
-					return true;
+					continue;
 				}
 
 				if ($expected != $got) {
@@ -148,7 +148,7 @@ namespace mimus {
 						return $value;
 					return sprintf("string(%d) \"%s\"", strlen($value), $value);
 				case 'array': /* TODO limit length */
-					return sprintf("array(%d)[%s]", count($value), implode(', ', $value));
+					return sprintf("array(%d) [%s]", count($value), implode(',', $value));
 				case 'object':
 					return get_class($value);
 				default:
