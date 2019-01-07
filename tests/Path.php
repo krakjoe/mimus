@@ -313,15 +313,9 @@ namespace mimus\tests {
 			$mock->rule("publicMethod")
 				->expects()
 				->executes()
-				->validates(new class implements \mimus\Validator {
-				public function getName() : string {
-					return "test validator";
-				}
-
-				public function validate(\mimus\Path $path, object $object = null, $retval = null) : bool {
+				->validates(function(\mimus\Path $path, $retval = null) : bool {
 					return false;
-				}
-			});
+				});
 
 			$object = $mock->getInstance();
 
@@ -335,15 +329,9 @@ namespace mimus\tests {
 			$mock->rule("publicMethod")
 				->expects()
 				->returns(true)
-				->validates(new class implements \mimus\Validator {
-				public function getName() : string {
-					return "test validator";
-				}
-
-				public function validate(\mimus\Path $path, object $object = null, $retval = null) : bool {
+				->validates(function(\mimus\Path $path, $retval = null) : bool {
 					return true;
-				}
-			});
+				});
 
 			$object = $mock->getInstance();
 
