@@ -91,7 +91,7 @@ class Foo {
 class Test extends \PHPUnit\Framework\TestCase {
 	
 	public function testHelloWorldStubbed() {
-		$mock = new \mimus\Mock(Foo::class);
+		$mock = \mimus\Mock::of(Foo::class);
 
 		$mock->rule("method")
 			->expects(true)
@@ -103,7 +103,7 @@ class Test extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testHelloWorldExecutes() {
-		$mock = new \mimus\Mock(Foo::class);
+		$mock = \mimus\Mock::of(Foo::class);
 
 		$mock->rule("method")
 			->expects(false)
@@ -115,7 +115,7 @@ class Test extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function testHelloWorldExecutesStubbed() {
-		$mock = new \mimus\Mock(Foo::class);
+		$mock = \mimus\Mock::of(Foo::class);
 
 		$mock->rule("method")
 			->expects(true)
