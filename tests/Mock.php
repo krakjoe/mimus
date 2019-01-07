@@ -23,53 +23,21 @@ namespace mimus\tests {
 			$this->assertFalse($object->publicMethod(true));
 		}
 
-		public function testPublicMethodExpectAndReturnTrue() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+		public function testMockNonExistentMethodLogicException() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Bar::class);
 
-			$mock->rule("publicMethod")
-				->expects(true)
-				->returns(true);
+			$this->expectException(\LogicException::class);
 
-			$object = $mock->getInstance();
-
-			$this->assertTrue($object->publicMethod(true));
+			$mock->rule("nonExistentMethod");
 		}
 
-		public function testPublicMethodExpectFalseAndFalse() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+		public function testMockGetInstanceConstructed() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Qux::class, false, [
+				"__construct"
+			]);
 
-			$mock->rule("publicMethod")
-				->expects(false)
-				->returns(false);
-
-			$object = $mock->getInstance();
-
-			$this->assertFalse($object->publicMethod(false));
-		}
-		
-		public function testPublicMethodExecutes() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
-
-			$mock->rule("publicMethod")
-				->expects(true)
-				->executes();
-
-			$mock->rule("protectedMethod")
-				->expects(true)
-				->executes();
-
-			$mock->rule("privateMethod")
-				->expects(true)
-				->executes();
-
-			$mock->rule("publicMethod")
-				->expects(false)
-				->returns(false);
-
-			$object = $mock->getInstance();
-
-			$this->assertFalse($object->publicMethod(true));
-			$this->assertFalse($object->publicMethod(false));
+			$this->expectException(\Error::class);
+			$mock->getInstance(true);
 		}
 	}
 }

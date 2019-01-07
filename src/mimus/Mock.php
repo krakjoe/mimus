@@ -62,7 +62,7 @@ namespace mimus {
 						throw $except;
 					}
 
-					if (!$prototype || $prototype->isStatic()) {
+					if ($prototype->isStatic()) {
 						return $path->travel(null, $closure, ...$args);
 					}
 
