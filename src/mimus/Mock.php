@@ -8,6 +8,10 @@ namespace mimus {
 		public /* please */ static /* don't look at my shame */
 			function of(string $class, bool $reset = true, array $whitelist = []) {
 
+			if (!class_exists($class)) {
+				throw new \LogicException("{$class} does not exist, nothing to mock");
+			}
+
 			if (!isset(Mock::$mocks[$class])) {
 				Mock::$mocks[$class] = new self($class, $whitelist);
 			} else if ($reset) {

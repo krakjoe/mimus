@@ -2,7 +2,12 @@
 namespace mimus\tests {
 
 	class Mock extends \PHPUnit\Framework\TestCase {
+		public function testClassDoesNotExistLogicException() {
+			$this->expectException(\LogicException::class);
 
+			\mimus\Mock::of(None::class);
+		}
+		
 		public function testWhiteList() {
 			$mock = \mimus\Mock::of(\mimus\tests\classes\Bar::class, false, [
 				"publicMethodUntouched"

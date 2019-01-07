@@ -16,6 +16,7 @@ namespace mimus {
 		* @param string the name of the class to mock
 		* @param string optionally prohibit resetting rules
 		* @param array whitelist of method names to execute as implemented (results in partial mock)
+		* @throws LogicException if class does not exist
 		*/
 		public static function of(string $class, bool $reset = true, array $whitelist = []);
 
