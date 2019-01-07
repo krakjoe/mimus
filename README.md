@@ -35,6 +35,13 @@ namespace mimus {
 		* @param bool controls registration of the class
 		*/
 		public function getMockConstructed() : object;
+
+		/*
+		* Shall clear all the rules for the given method
+		* @param string the name of a method, or null
+		* Note: if method is null, rules for all methods are reset
+		*/
+		public function reset(string $method = null);
 	}
 
 	class Rule {

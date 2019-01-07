@@ -92,6 +92,14 @@ namespace mimus {
 			return $this->reflector->newInstanceArgs(...$args);
 		}
 
+		public function rule(string $name) : Rule {
+			if (!isset($this->table[$name])) {
+				throw new \LogicException(
+					"method does not exist");
+			}
+			return $this->table[$name][] = new Rule($this, $name);
+		}
+
 		public function reset(string $name = null) {
 			if ($name === null) {
 				foreach ($this->table as $name => $rules) {
@@ -102,14 +110,6 @@ namespace mimus {
 					unset($this->table[$name][$idx]);
 				}		
 			}
-		}
-
-		public function rule(string $name) : Rule {
-			if (!isset($this->table[$name])) {
-				throw new \LogicException(
-					"method does not exist");
-			}
-			return $this->table[$name][] = new Rule($this, $name);
 		}
 
 		private $definition;
