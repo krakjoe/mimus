@@ -43,7 +43,7 @@ namespace mimus {
 
 	class Rule {
 		/*
-		* Shall return the path for the given arguments
+		* Shall return the path for the given arguments, or any arguments if none are given
 		*/
 		public function expects(...$args) : Path;		
 	}
@@ -60,8 +60,16 @@ namespace mimus {
 		/*
 		* Shall tell mimus what this path should (or will) return
 		* @param mixed
+		*	If this path executes, then the return value given is verified to
+		*	match the runtime return value.
+		*	If this path does not execute, the return value is used as the
+		*	runtime return value.
 		*/
 		public function returns($value) : Path;
+		/*
+		* Shall tell mimus that this path should be void (not return anything)
+		*/
+		public function void() : Path;
 		/*
 		* Shall tell mimus what this path should throw
 		* @param string the name of the exception expected

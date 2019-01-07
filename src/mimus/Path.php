@@ -2,10 +2,12 @@
 namespace mimus {
 	
 	class Path {
-		public static $sentinal;
+		public static $sentinal; /* DO NOT TOUCH */
 
 		public function __construct(...$accepts) {
-			$this->accepts = $accepts;
+			if (func_num_args()) {
+				$this->accepts = $accepts;
+			} else $this->accepts = Path::$sentinal;
 			$this->returns = Path::$sentinal;
 		}
 
@@ -18,13 +20,21 @@ namespace mimus {
 		}
 
 		public function returns($value) : Path {
+			if ($this->void) {
+				throw new \LogicException(
+					"cannot return from void path");
+			}
 			$this->returns = $value;
 
 			return $this;
 		}
 
 		public function void() : Path {
-			$this->void    = true;
+			if ($this->returns !== Path::$sentinal) {
+				throw new \LogicException(
+					"void path cannot return");
+			}
+			$this->void = true;
 
 			return $this;
 		}
@@ -36,6 +46,10 @@ namespace mimus {
 		}
 
 		public function try(?Exception $except, bool $count, ...$args) : bool {
+			if ($this->accepts == Path::$sentinal) {
+				return true;
+			}
+
 			if ($count && count($args) != count($this->accepts)) {
 				throw new Exception($except,
 					"expected %d arguments, got %d",

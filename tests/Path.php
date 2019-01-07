@@ -3,6 +3,28 @@ namespace mimus\tests {
 
 	class Path extends \PHPUnit\Framework\TestCase {
 
+		public function testLogicExceptionReturnCannotBeVoid() {
+			$mock = new \mimus\Mock(\mimus\tests\classes\Foo::class);
+
+			$this->expectException(\LogicException::class);
+
+			$mock->rule("publicMethod")
+				->expects(true)
+				->returns(true)
+				->void();
+		}
+
+		public function testLogicExceptionVoidCannotReturn() {
+			$mock = new \mimus\Mock(\mimus\tests\classes\Foo::class);
+
+			$this->expectException(\LogicException::class);
+
+			$mock->rule("publicMethod")
+				->expects(true)
+				->void()
+				->returns(true);
+		}
+
 		public function testWrongArgumentCount() {
 			$mock = new \mimus\Mock(\mimus\tests\classes\Foo::class);
 			$mock->rule("publicMethod")
@@ -168,6 +190,39 @@ namespace mimus\tests {
 			
 			$this->expectException(\mimus\Exception::class);
 			$this->assertNull($object->publicMethod(true));
+		}
+
+		public function testExpectsAny() {
+			$mock = new \mimus\Mock(\mimus\tests\classes\Foo::class);
+			$mock->rule("publicMethod")
+				->expects()
+				->executes(function(){
+					return "mimus";
+				})
+				->returns("mimus");
+
+			$object = $mock->getMock();
+			
+			$this->assertSame("mimus", $object->publicMethod());
+		}
+
+		public function testExpectsAnyFallback() {
+			$mock = new \mimus\Mock(\mimus\tests\classes\Foo::class);
+			$mock->rule("publicMethod")
+				->expects("unused")
+				->executes(function(){
+					return "unused";
+				});
+			$mock->rule("publicMethod")
+				->expects()
+				->executes(function(){
+					return "mimus";
+				})
+				->returns("mimus");
+
+			$object = $mock->getMock();
+			
+			$this->assertSame("mimus", $object->publicMethod());
 		}
 	}
 }
