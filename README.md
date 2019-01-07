@@ -104,7 +104,7 @@ class Test extends \PHPUnit\Framework\TestCase {
 			->expects(true)
 			->returns(true);
 
-		$object = $mock->getMock();
+		$object = $mock->getInstance();
 
 		$this->assertTrue($object->method(true));
 	}
@@ -116,7 +116,7 @@ class Test extends \PHPUnit\Framework\TestCase {
 			->expects(false)
 			->executes();
 
-		$object = $mock->getMock();
+		$object = $mock->getInstance();
 
 		$this->assertFalse($object->method(false));
 	}
@@ -130,7 +130,7 @@ class Test extends \PHPUnit\Framework\TestCase {
 			return "mimus";
 		});
 
-		$object = $mock->getMock();
+		$object = $mock->getInstance();
 
 		$this->assertSame("mimus", $object->method(true));
 	}
