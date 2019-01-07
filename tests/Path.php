@@ -76,6 +76,23 @@ namespace mimus\tests {
 			$this->assertNull($object->publicMethod(false));
 		}
 
+		public function testExecutes() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock->rule("publicMethod")
+				->expects()
+				->executes();
+			$mock->rule("privateMethod")
+				->expects()
+				->executes();
+			$mock->rule("protectedMethod")
+				->expects()
+				->executes();
+
+			$object = $mock->getInstance();
+			
+			$this->assertFalse($object->publicMethod(true));
+		}
+
 		public function testException() {
 			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
 
