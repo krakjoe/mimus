@@ -183,15 +183,15 @@ namespace mimus {
 				return;
 			}
 
-			foreach ($this->validators as $validator) {
-				try {
-					if (!$validator->validate($this, $object, $retval)) {
-						throw new Exception($except,
-							"validation of %s failed",
-							$validator->getName());
-					}
-				} catch (Exception $ex) {
-					$except = $ex;
+			foreach ($this->validators as $idx => $validator) {
+				$result = $object ? 
+					$validator->call($object, $this, $retval) :
+					$validator($this, $retval);
+
+				if (!$result) {
+					$except = new Exception($except,
+						"validator %d failed",
+						$idx);
 				}
 			}
 
@@ -263,7 +263,7 @@ namespace mimus {
 			return $retval;
 		}
 
-		public function validates(Validator $validator) : Path {
+		public function validates(\Closure $validator) : Path {
 			$this->validators[] = $validator;
 
 			return $this;

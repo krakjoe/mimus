@@ -98,22 +98,11 @@ namespace mimus {
 		/*
 		* Shall tell mimus to add a validator to Path
 		* Note: Validators will be executed after all other conditions before returning,
-		*	Validator::validate should return true to allow execution to continue.
-		*	May be called multiple times
+		*	Validators will be bound to the correct object before invokation
+		*	Validators that return false will raise exceptions
+		*	Validators should have the prototype function(Path $path, $retval = null)
 		*/
-		public function validates(Validator $validator) : Path;
-	}
-
-	interface Validator {
-		/*
-		* Should return a descriptive human readable name for this validator
-		*/
-		public function getName() : string;
-
-		/*
-		* Should return boolean indication of validty
-		*/
-		public function validate(Path $path, object $object = null, $retval = null) : bool;
+		public function validates(\Closure $validator) : Path;
 	}
 }
 ```
