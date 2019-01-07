@@ -1,44 +1,36 @@
 <?php
 namespace mimus {
-	
+
 	use Componere\Definition;
 	use Componere\Method;
-	
+
 	class Mock {
 
-		public function __construct(string $class) {
+		public /* please */ static /* don't look at my shame */
+			function of(string $class, bool $reset = true) {
+
+			if (!isset(Mock::$mocks[$class])) {
+				Mock::$mocks[$class] = new self($class);
+			} else if ($reset) {
+				Mock::$mocks[$class]->reset();
+			}
+
+			return Mock::$mocks[$class];
+		}
+
+		private function __construct(string $class) {
 			$this->definition = new Definition($class);
+			$this->reflector  = $this->definition->getReflector();
 
-			$this->reflector  = $this
-				->definition->getReflector();
-		}
+			foreach ($this->reflector->getMethods() as $prototype) {
+				$name      = $prototype->getName();
 
-		public function getMock(bool $register = false) : object {
-			$this->build($register);
+				$this->table[$name] = [];
 
-			return $this->reflector->newInstanceWithoutConstructor();
-		}
+				$closure   = $this->definition->getClosure($name);
+				$table     =& $this->table[$name];
 
-		public function getMockConstructed(bool $register = false, ...$args) : object {
-			$this->build($register);
-
-			return $this->reflector->newInstanceArgs(...$args);
-		}
-
-		public function getMockStatic() : void {
-			$this->build(true);
-		}
-
-		public function rule(string $name) : Rule {
-			return $this->table[$name][] = new Rule($this, $name);
-		}
-
-		private function build(bool $register) {
-			foreach ($this->definition->getClosures() as $name => $closure) {
-				$prototype = $this->reflector->getMethod($name);
-				$table     = $this->table[$name] ?? null;
-
-				$this->definition->addMethod($name, $implementation = new Method(function(...$args) use($name, $closure, $prototype, $table) {
+				$this->definition->addMethod($name, $implementation = new Method(function(...$args) use($name, $closure, $prototype, &$table) {
 					$except = null;
 					$path    = null;
 
@@ -88,18 +80,42 @@ namespace mimus {
 					}
 				}
 			}
+			
+			$this->definition->register();
+		}
 
-			if ($register && !($this->state & MOCK::REGISTERED)) {
-				$this->definition->register();
+		public function getMock() : object {
+			return $this->reflector->newInstanceWithoutConstructor();
+		}
 
-				$this->state |= MOCK::REGISTERED;
+		public function getMockConstructed(...$args) : object {
+			return $this->reflector->newInstanceArgs(...$args);
+		}
+
+		public function reset(string $name = null) {
+			if ($name === null) {
+				foreach ($this->table as $name => $rules) {
+					$this->reset($name);
+				}
+			} else {
+				foreach ($this->table[$name] as $idx => $rule) {
+					unset($this->table[$name][$idx]);
+				}		
 			}
 		}
 
-		private $definition;
-		private $table;
-		private $state;
+		public function rule(string $name) : Rule {
+			if (!isset($this->table[$name])) {
+				throw new \LogicException(
+					"method does not exist");
+			}
+			return $this->table[$name][] = new Rule($this, $name);
+		}
 
-		const REGISTERED = 0x00000001;
+		private $definition;
+		private $reflector;
+		private $table;
+
+		private static $mocks;
 	}
 }

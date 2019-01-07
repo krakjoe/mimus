@@ -4,7 +4,8 @@ namespace mimus\tests {
 	class Mock extends \PHPUnit\Framework\TestCase {
 
 		public function testPublicMethodExpectAndReturnTrue() {
-			$mock = new \mimus\Mock(\mimus\tests\classes\Foo::class);
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+
 			$mock->rule("publicMethod")
 				->expects(true)
 				->returns(true);
@@ -15,7 +16,8 @@ namespace mimus\tests {
 		}
 
 		public function testPublicMethodExpectFalseAndFalse() {
-			$mock = new \mimus\Mock(\mimus\tests\classes\Foo::class);
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+
 			$mock->rule("publicMethod")
 				->expects(false)
 				->returns(false);
@@ -26,14 +28,16 @@ namespace mimus\tests {
 		}
 		
 		public function testPublicMethodExecutes() {
-			$mock = new \mimus\Mock(\mimus\tests\classes\Foo::class);
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(true)
 				->executes();
+
 			$mock->rule("protectedMethod")
 				->expects(true)
 				->executes();
+
 			$mock->rule("privateMethod")
 				->expects(true)
 				->executes();

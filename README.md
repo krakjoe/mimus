@@ -12,13 +12,14 @@ namespace mimus {
 
 	class Mock {
 		/*
-		* Shall create a new Mock builder for $class
+		* Shall create or return Mock builder for $class
 		* @param string the name of the class to mock
+		* @param string optionally prohibit resetting rules
 		*/
-		public function __construct(string $class);
+		public static function of(string $class, bool $reset = true);
 
 		/*
-		* Shall create a new Rule in this builder
+		* Shall create a new Rule for method in this builder
 		* @param string the name of the method
 		*/
 		public function rule(string $method) : Rule;
@@ -27,18 +28,13 @@ namespace mimus {
 		* Shall return an object of the mocked type
 		* @param bool controls registration of the class
 		*/
-		public function getMock(bool $register = false) : object;
+		public function getMock() : object;
 
 		/*
 		* Shall return an object of the mocked type, having invoked it's constructor
 		* @param bool controls registration of the class
 		*/
-		public function getMockConstructed(bool $register = false) : object;
-
-		/*
-		* Shall register the mock for static reference
-		*/
-		public function getMockStatic() : void;
+		public function getMockConstructed() : object;
 	}
 
 	class Rule {
