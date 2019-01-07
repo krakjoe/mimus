@@ -98,7 +98,8 @@ namespace mimus {
 		/*
 		* Shall tell mimus to add a validator to Path
 		* Note: Validators will be executed after all other conditions before returning,
-		*	Validator::validate should return true to allow execution to continue
+		*	Validator::validate should return true to allow execution to continue.
+		*	May be called multiple times
 		*/
 		public function validates(Validator $validator) : Path;
 	}
