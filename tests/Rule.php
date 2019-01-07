@@ -8,11 +8,11 @@ namespace mimus\tests {
 
 			$rule = $mock->rule("publicMethod");
 			
-			$rule->expects(true);
+			$rule->expects();
 
-			$this->expectException(\LogicException::class);
+			$this->expectException(\mimus\Exception::class);
 
-			$rule->expects(true);
+			$rule->expects();
 		}
 	}
 }

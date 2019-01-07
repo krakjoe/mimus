@@ -6,6 +6,9 @@
     <testsuite name="Path">
       <file>tests/Path.php</file>
     </testsuite>
+    <testsuite name="Rule">
+      <file>tests/Rule.php</file>
+    </testsuite>
   </testsuites>
   <filter>
   <whitelist processUncoveredFilesFromWhitelist="true">
