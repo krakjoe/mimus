@@ -34,28 +34,46 @@ namespace mimus {
 					count($this->accepts), count($args));
 			}
 
-			foreach ($args as $idx => $arg) {
-				if (gettype($arg) != gettype($this->accepts[$idx])) {
-					throw new Exception($except,
-						"argument %d expected to be of type %s, got type %s",
-						$idx, gettype($this->accepts[$idx]), gettype($args[$idx]));
+			foreach ($this->accepts as $idx => $arg) {
+				$expected = gettype($arg);
+				$got      = gettype($args[$idx]);
+
+				if (($expected == 'string' || $expected == 'object') && is_object($args[$idx])) {
+					if (!$args[$idx] instanceof $expected) {
+						throw new Exception($except,
+							"argument %d expected to be of class %s got %s",
+							$idx,
+							$this->accepts[$idx],
+							get_class($arg));
+					}
 				}
 
-				switch (gettype($args[$idx])) {
+				if ($expected != $got) {
+					throw new Exception($except,
+						"argument %d expected to be of type %s, got type %s",
+						$idx, $expected, $got);
+				}
 
+				switch ($expected) {
+					case 'null':
 					case 'string':
 					case 'integer':
 					case 'float':
 					case 'boolean':
-						if ($args[$idx] !== $this->accepts[$idx]) {
+					case 'array':
+						if ($arg !== $args[$idx]) {
 							throw new Exception($except,
-								"argument %d expected to be '%s' got '%s'",
-								$idx, $this->accepts[$idx], $args[$idx]); 
+								"argument %d expected to be %s got %s",
+								$idx,
+								$this->printable($arg),
+								$this->printable($args[$idx]));
 						}
 					break;
 
 					default:
-						var_dump(gettype($args[$idx]));
+						throw new Exception($except,
+							"argument %d is an unknown type, %s",
+							$idx, gettype($arg)); 
 				}
 			}
 
@@ -81,18 +99,19 @@ namespace mimus {
 
 			if ($this->returns === null && $value) {
 				throw new Exception(null,
-					"return value not expected, got null",
-					gettype($value));
+					"return value not expected, got null");
 			}
 
 			if (gettype($this->returns) != gettype($value)) {
-				throw new Exception(null,
-					"return value expected to be of type %s, got %s",
-					gettype($this->returns),
-					gettype($value));
+				if (gettype($this->returns) != 'string' && gettype($value) != 'object') {
+					throw new Exception(null,
+						"return value expected to be of type %s, got %s",
+						gettype($this->returns),
+						gettype($value));
+				}
 			}
 
-			if (gettype($this->returns) == 'object') {
+			if (gettype($this->returns) == 'object' || gettype($value) == 'object') {
 				if (gettype($value) != 'object' || !$value instanceof $this->returns) {
 					throw new Exception(null,
 						"return value expected to be of class %s, got %s",
@@ -100,16 +119,38 @@ namespace mimus {
 							gettype($value) == 'object' ? 
 								get_class($value) : gettype($value));
 				}
+				return true;
 			}
 
 			if ($value !== $this->returns) {
 				throw new Exception(null,
 						"return value expected to be %s, got %s",
-						(string) $this->returns,
-						(string) $value); /* TODO(serialize) */
+						$this->printable($this->returns),
+						$this->printable($value));
 			}
 
 			return true;
+		}
+
+		private function printable($value) {
+			switch (gettype($value)) {
+				case 'null':
+					return 'null';
+				case 'boolean':
+					return $value ? "bool(true)" : "bool(false)";
+				case 'integer':
+					return sprintf("int(%d)", $value);
+				case 'double':
+					return sprintf("float(%f)", $value);
+				case 'string': /* TODO limit length */
+					return sprintf("string(%d) \"%s\"", strlen($value), $value);
+				case 'array': /* TODO limit length */
+					return sprintf("array(%d)[%s]", count($value), implode(', ', $value));
+				case 'object':
+					return get_class($value);
+				default:
+					return 'unknown';
+			}
 		}
 
 		public function travel(?object $object, \Closure $prototype, ...$args) {
@@ -129,7 +170,6 @@ namespace mimus {
 				}
 
 			} catch (\Throwable $thrown) {
-
 				if ($this->throws) {
 					try {
 						$this->verifyException($thrown);
