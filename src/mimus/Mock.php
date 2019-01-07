@@ -90,7 +90,7 @@ namespace mimus {
 		public function rule(string $name) : Rule {
 			if (!isset($this->table[$name])) {
 				throw new \LogicException(
-					"method does not exist");
+					"method does not exist, or is whitelisted");
 			}
 			return $this->table[$name][] = new Rule($this, $name);
 		}
