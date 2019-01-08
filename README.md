@@ -7,10 +7,264 @@ mimus
 
 mimus relies on [Componere](https://github.com/krakjoe/componere) to provide mocking facilities for testing.
 
+Doubles
+=======
+
+A test double is a class that takes the place of an existing class while a system is under test.
+
+```
+<?php
+require "vendor/autoload.php";
+
+class Foo {
+
+	public function doesSomethingAndReturnsBool() : bool {
+		/** ... **/
+		return true;
+	}
+}
+
+$mock = \mimus\Mock::of(Foo::class);
+?>
+```
+
+At this time, the definition of ```Foo``` has been replaced with a double, it has the same interface as ```Foo``` but none of the methods do anything - they have been stubbed.
+
+What we want is to replace the implementation of ```Foo::doesSomethingAndReturnsBool``` so that it just returns ```true```.
+
+Stubs
+=====
+
+To make the stubs do something, you must tell ```mimus``` what the method should, or will do:
+
+```
+<?php
+require "vendor/autoload.php";
+
+class Foo {
+
+	public function doesSomethingAndReturnsBool() : bool {
+		/** ... **/
+		return true;
+	}
+}
+
+$mock = \mimus\Mock::of(Foo::class);
+
+$mock->rule("doesSomethingAndReturnsBool")
+	->expects() /* take any arguments */
+	->returns(true); /* return true; */
+
+$object = $mock->getInstance();
+
+var_dump($object->doesSomethingAndReturnsBool()); // bool(true)
+?>
+```
+
+In some cases, our method needs to return a different value for different input:
+
+```
+<?php
+require "vendor/autoload.php";
+
+class Foo {
+
+	public function doesSomethingAndReturnsBool($argument) : bool {
+		/** ... **/
+		return true;
+	}
+}
+
+$mock = \mimus\Mock::of(Foo::class);
+
+$mock->rule("doesSomethingAndReturnsBool")
+	->expects(true) /* takes these arguments */
+	->returns(true); /* return true; */
+$mock->rule("doesSomethingAndReturnsBool")
+	->expects(false) /* takes these arguments */
+	->returns(false); /* return false; */
+
+$object = $mock->getInstance();
+
+var_dump($object->doesSomethingAndReturnsBool(true)); // bool(true)
+var_dump($object->doesSomethingAndReturnsBool(false)); // bool(false)
+?>
+```
+
+At this time, we have defined two valid paths through the method based on the arguments given at runtime, should the method be invoked like this:
+
+```
+<?php
+var_dump($object->doesSomethingAndReturnsBool("mimus"));
+```
+
+mimus will raise ```\mimus\Exception``` for each rule that has been broken (2).
+
+Paths
+=====
+
+A path may:
+
+  * expect (or set) a return value (previous examples)
+  * execute original implementation
+  * execute different implementation
+  * expect an exception
+  * expect to be entered a maximum number of times
+
+Execute Original Implementation
+-------------------------------
+
+Suppose we want to allow the original implementation to execute, and to ensure that the return value is as expected:
+
+```
+<?php
+require "vendor/autoload.php";
+
+class Foo {
+
+	public function doesSomethingAndReturnsBool($arg) : bool {
+		/** ... **/
+		return true;
+	}
+}
+
+$mock = \mimus\Mock::of(Foo::class);
+
+$mock->rule("doesSomethingAndReturnsBool")
+	->expects("yes")
+	->executes() // executes original
+	->returns(true);
+$mock->rule("doesSomethingAndReturnsBool")
+	->expects("no")
+	->executes() // executes original
+	->returns(false);
+
+$object = $mock->getInstance();
+
+var_dump($object->doesSomethingAndReturnsBool("yes")); // bool(true)
+var_dump($object->doesSomethingAndReturnsBool("no"));
+?>
+```
+
+While the first call will succeed, the second will raise ```\mimus\Exception: return value expected to be bool(false), got bool(true)```.
+
+
+Execute Different Implementation
+--------------------------------
+
+Suppose we want to execute a different implementation in place of the original:
+
+```
+<?php
+require "vendor/autoload.php";
+
+class Foo {
+
+	public function doesSomethingAndReturnsBool($arg) : bool {
+		/** ... **/
+		return true;
+	}
+}
+
+$mock = \mimus\Mock::of(Foo::class);
+
+$mock->rule("doesSomethingAndReturnsBool")
+	->expects("yes")
+	->executes() // executes original code
+	->returns(true);
+$mock->rule("doesSomethingAndReturnsBool")
+	->expects("no")
+	->executes(function(){
+		return false;
+	}); // no need for returns()
+
+$object = $mock->getInstance();
+
+var_dump($object->doesSomethingAndReturnsBool("yes")); // bool(true)
+var_dump($object->doesSomethingAndReturnsBool("no"));  // bool(false)
+?>
+```
+
+Exceptions
+----------
+
+Suppose we want to verify that a Path throws an exception:
+
+```
+<?php
+require "vendor/autoload.php";
+
+class Foo {
+
+	public function doesSomethingAndReturnsBool($arg) : bool {
+		if ($arg) {
+			throw new Exception();
+		}
+		return true;
+	}
+}
+
+$mock = \mimus\Mock::of(Foo::class);
+
+$mock->rule("doesSomethingAndReturnsBool")
+	->expects(true)
+	->executes()
+	->throws(Exception::class);
+$mock->rule("doesSomethingAndReturnsBool")
+	->expects(false)
+	->executes()
+	->throws(Exception::class);
+
+$object = $mock->getInstance();
+
+try {
+	$object->doesSomethingAndReturnsBool(true);
+} catch (Exception $ex) {
+	
+}
+
+$object->doesSomethingAndReturnsBool(false);
+?>
+```
+
+Limits
+------
+
+Suppose we want to limit the number of times a method is entered:
+
+```
+<?php
+require "vendor/autoload.php";
+
+class Foo {
+
+	public function doesSomethingAndReturnsBool() : bool {
+		/* ... */
+		return true;
+	}
+}
+
+$mock = \mimus\Mock::of(Foo::class);
+
+$mock->rule("doesSomethingAndReturnsBool")
+	->expects(true)
+	->returns(true)
+	->once(); // limit() and never() also available
+
+$object = $mock->getInstance();
+
+var_dump($object->doesSomethingAndReturnsBool(true)); // bool(true)
+var_dump($object->doesSomethingAndReturnsBool(true));
+?>
+```
+
+While the first call will succeed, the second will raise: ```mimus\Exception: limit of 1 exceeded```.
+
 API
 ===
 
 ```
+<?php
 namespace mimus {
 
 	class Mock {
