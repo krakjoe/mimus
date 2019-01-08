@@ -124,4 +124,27 @@ namespace mimus {
 
 		private static $mocks;
 	}
+
+	function printable($value) {
+		switch (gettype($value)) {
+			case 'null':
+				return 'null';
+			case 'boolean':
+				return $value ? "bool(true)" : "bool(false)";
+			case 'integer':
+				return sprintf("int(%d)", $value);
+			case 'double':
+				return sprintf("float(%s)", $value);
+			case 'string': /* TODO limit length */
+				if (class_exists($value, 0))
+					return $value;
+				return sprintf("string(%d) \"%s\"", strlen($value), $value);
+			case 'array': /* TODO limit length */
+				return sprintf("array(%d) [%s]", count($value), implode(',', $value));
+			case 'object':
+				return get_class($value);
+			default:
+				return 'unknown';
+		}
+	}
 }

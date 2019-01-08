@@ -9,6 +9,9 @@
     <testsuite name="Rule">
       <file>tests/Rule.php</file>
     </testsuite>
+    <testsuite name="Printing">
+      <file>tests/Printing.php</file>
+    </testsuite>
   </testsuites>
   <filter>
   <whitelist processUncoveredFilesFromWhitelist="true">
