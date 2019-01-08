@@ -186,6 +186,8 @@ var_dump($object->doesSomethingAndReturnsBool("no"));  // bool(false)
 ?>
 ```
 
+While the first call will invoke the original implementation, the second will invoke the given implementation.
+
 Exceptions
 ----------
 
