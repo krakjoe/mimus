@@ -23,17 +23,15 @@ before_install:
   - ./configure
   - make
   - make install
+  - echo "extension=componere.so"               >  $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/componere.ini
+  - echo "variables_order=EGPCS"                >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php.ini
+  - echo                                        >  $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
+  - echo "opcache.optimization_level=0"         >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
+  - echo "opcache.enable_cli=$OPCACHE"          >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
   - cd $TRAVIS_BUILD_DIR
 
 install:
   - composer install
-
-before_script:
-  - echo "variables_order=EGPCS"                >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php.ini
-  - echo                                        >  $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
-  - echo "extension=componere.so"               >  $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/componere.ini
-  - echo "opcache.optimization_level=0"         >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
-  - echo "opcache.enable_cli=$OPCACHE"          >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=$HOME/coverage.xml
