@@ -374,6 +374,7 @@ namespace mimus {
 		* @param string the name of the class to mock
 		* @param bool optionally prohibit resetting rules
 		* @throws LogicException if name does not exist
+		* @throws LogicException if name is the name of an abstract class
 		*/
 		public static function class(string $name, bool $reset = true);
 
