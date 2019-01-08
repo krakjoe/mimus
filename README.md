@@ -2,6 +2,9 @@ mimus
 =====
 *mocking*
 
+[![Build Status](https://travis-ci.org/krakjoe/mimus.svg?branch=master)](https://travis-ci.org/krakjoe/mimus)
+[![Coverage Status](https://coveralls.io/repos/github/krakjoe/mimus/badge.svg?branch=master)](https://coveralls.io/github/krakjoe/mimus?branch=master)
+
 mimus relies on [Componere](https://github.com/krakjoe/componere) to provide mocking facilities for testing.
 
 API
