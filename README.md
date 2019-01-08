@@ -33,7 +33,7 @@ $builder = double::class(Foo::class);
 ?>
 ```
 
-At this time, the definition of ```Foo``` has been replaced with a double, it has the same interface as ```Foo``` but none of the methods do anything - they have been stubbed.
+At this time, the definition of ```Foo``` has been replaced with a mock, it has the same interface as ```Foo``` but none of the methods do anything - they have been stubbed: Subsequent calls to ```new Foo``` will create a test double.
 
 Stubs
 =====
