@@ -5,7 +5,11 @@ mimus
 [![Build Status](https://travis-ci.org/krakjoe/mimus.svg?branch=master)](https://travis-ci.org/krakjoe/mimus)
 [![Coverage Status](https://coveralls.io/repos/github/krakjoe/mimus/badge.svg?branch=master)](https://coveralls.io/github/krakjoe/mimus?branch=master)
 
-mimus relies on [Componere](https://github.com/krakjoe/componere) to provide mocking facilities for testing.
+Requirements
+============
+
+  * PHP 7.1+
+  * [Componere](https://github.com/krakjoe/componere)
 
 Doubles
 =======
@@ -29,8 +33,6 @@ $mock = \mimus\Mock::of(Foo::class);
 ```
 
 At this time, the definition of ```Foo``` has been replaced with a double, it has the same interface as ```Foo``` but none of the methods do anything - they have been stubbed.
-
-What we want is to replace the implementation of ```Foo::doesSomethingAndReturnsBool``` so that it just returns ```true```.
 
 Stubs
 =====
@@ -109,7 +111,7 @@ A path may:
   * execute original implementation
   * execute different implementation
   * expect an exception
-  * expect to be entered a maximum number of times
+  * expect to be entered a maximum number of times (or never)
 
 Execute Original Implementation
 -------------------------------
@@ -374,66 +376,8 @@ namespace mimus {
 }
 ```
 
-Hello World
-===========
-
-```
-<?php
-require_once("vendor/autoload.php");
-
-class Foo {
-	public function method() {
-		return false;
-	}
-}
-
-class Test extends \PHPUnit\Framework\TestCase {
-	
-	public function testHelloWorldStubbed() {
-		$mock = \mimus\Mock::of(Foo::class);
-
-		$mock->rule("method")
-			->expects(true)
-			->returns(true);
-
-		$object = $mock->getInstance();
-
-		$this->assertTrue($object->method(true));
-	}
-
-	public function testHelloWorldExecutes() {
-		$mock = \mimus\Mock::of(Foo::class);
-
-		$mock->rule("method")
-			->expects(false)
-			->executes();
-
-		$object = $mock->getInstance();
-
-		$this->assertFalse($object->method(false));
-	}
-
-	public function testHelloWorldExecutesStubbed() {
-		$mock = \mimus\Mock::of(Foo::class);
-
-		$mock->rule("method")
-			->expects(true)
-			->executes(function(){
-			return "mimus";
-		});
-
-		$object = $mock->getInstance();
-
-		$this->assertSame("mimus", $object->method(true));
-	}
-}
-?>
-
-```
-
 TODO
 ====
 
-  * Everything ...
-
-__PLEASE DO NOT USE THIS YET, WIP!!__
+  * more tests would be nice ...
+  * I've always wanted to meet a polar bear ...
