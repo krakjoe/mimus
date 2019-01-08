@@ -265,6 +265,54 @@ var_dump($object->doesSomethingAndReturnsBool(true));
 
 While the first call will succeed, the second will raise: ```mimus\Exception: limit of 1 exceeded```.
 
+Partial Mocks
+=============
+
+Partial mocks are used, for example, to allow an object of a mocked type to execute an interface as implemented:
+
+```php
+<?php
+require "vendor/autoload.php";
+
+interface IFace {
+	public function interfaceMethod();
+}
+
+class Foo implements IFace {
+
+	public function interfaceMethod() {
+		return true;	
+	}
+
+	public function nonInterfaceMethod() {
+		return false;
+	}
+}
+
+$mock = \mimus\Mock::of(Foo::class);
+$mock->partialize([
+	"interfaceMethod"
+]);
+$mock->rule("nonInterfaceMethod")
+	->expects()
+	->never();
+
+$object = $mock->getInstance();
+
+var_dump($object->interfaceMethod());    // bool(true)
+var_dump($object->nonInterfaceMethod());
+```
+
+While the first call will be executed as implemented, the second will raise ```mimus\Exception: limit of 1 exceeded```.
+
+```\mimus\Mock::partialize``` also accepts the name of a valid class, the call above could be written:
+
+```php
+/* ... */
+$mock->partialize(IFace::class);
+/* ... */
+```
+
 API
 ===
 
