@@ -13,11 +13,13 @@ Requirements
 Doubles
 =======
 
-A test double is a class that takes the place of an existing class while a system is under test.
+A test double is an object that takes the place of an existing class while a system is under test, it has the type of the object it usurps.
 
 ```php
 <?php
 require "vendor/autoload.php";
+
+use \mimus\Double as double;
 
 class Foo {
 
@@ -27,7 +29,7 @@ class Foo {
 	}
 }
 
-$mock = \mimus\Mock::of(Foo::class);
+$mock = double::class(Foo::class);
 ?>
 ```
 
@@ -42,6 +44,8 @@ To make the stubs do something, you must tell ```mimus``` what the method should
 <?php
 require "vendor/autoload.php";
 
+use \mimus\Double as double;
+
 class Foo {
 
 	public function doesSomethingAndReturnsBool() : bool {
@@ -50,7 +54,7 @@ class Foo {
 	}
 }
 
-$mock = \mimus\Mock::of(Foo::class);
+$mock = double::class(Foo::class);
 
 $mock->rule("doesSomethingAndReturnsBool")
 	->expects() /* take any arguments */
@@ -68,6 +72,8 @@ In some cases, our method needs to return a different value for different input:
 <?php
 require "vendor/autoload.php";
 
+use \mimus\Double as double;
+
 class Foo {
 
 	public function doesSomethingAndReturnsBool($argument) : bool {
@@ -76,7 +82,7 @@ class Foo {
 	}
 }
 
-$mock = \mimus\Mock::of(Foo::class);
+$mock = double::class(Foo::class);
 
 $mock->rule("doesSomethingAndReturnsBool")
 	->expects(true) /* takes these arguments */
@@ -121,6 +127,8 @@ Suppose we want to allow the original implementation to execute, and to ensure t
 <?php
 require "vendor/autoload.php";
 
+use \mimus\Double as double;
+
 class Foo {
 
 	public function doesSomethingAndReturnsBool($arg) : bool {
@@ -129,7 +137,7 @@ class Foo {
 	}
 }
 
-$mock = \mimus\Mock::of(Foo::class);
+$mock = double::class(Foo::class);
 
 $mock->rule("doesSomethingAndReturnsBool")
 	->expects("yes")
@@ -159,6 +167,8 @@ Suppose we want to execute a different implementation in place of the original:
 <?php
 require "vendor/autoload.php";
 
+use \mimus\Double as double;
+
 class Foo {
 
 	public function doesSomethingAndReturnsBool($arg) : bool {
@@ -167,7 +177,7 @@ class Foo {
 	}
 }
 
-$mock = \mimus\Mock::of(Foo::class);
+$mock = double::class(Foo::class);
 
 $mock->rule("doesSomethingAndReturnsBool")
 	->expects("yes")
@@ -197,6 +207,8 @@ Suppose we want to verify that a Path throws an exception:
 <?php
 require "vendor/autoload.php";
 
+use \mimus\Double as double;
+
 class Foo {
 
 	public function doesSomethingAndReturnsBool($arg) : bool {
@@ -207,7 +219,7 @@ class Foo {
 	}
 }
 
-$mock = \mimus\Mock::of(Foo::class);
+$mock = double::class(Foo::class);
 
 $mock->rule("doesSomethingAndReturnsBool")
 	->expects(true)
@@ -241,6 +253,8 @@ Suppose we want to limit the number of times a method is entered:
 <?php
 require "vendor/autoload.php";
 
+use \mimus\Double as double;
+
 class Foo {
 
 	public function doesSomethingAndReturnsBool() : bool {
@@ -249,7 +263,7 @@ class Foo {
 	}
 }
 
-$mock = \mimus\Mock::of(Foo::class);
+$mock = double::class(Foo::class);
 
 $mock->rule("doesSomethingAndReturnsBool")
 	->expects(true)
@@ -274,6 +288,8 @@ Partial mocks are used, for example, to allow an object of a mocked type to exec
 <?php
 require "vendor/autoload.php";
 
+use \mimus\Double as double;
+
 interface IFace {
 	public function interfaceMethod();
 }
@@ -289,7 +305,7 @@ class Foo implements IFace {
 	}
 }
 
-$mock = \mimus\Mock::of(Foo::class);
+$mock = double::class(Foo::class);
 $mock->partialize([
 	"interfaceMethod"
 ]);
@@ -305,7 +321,7 @@ var_dump($object->nonInterfaceMethod());
 
 While the first call will be executed as implemented, the second will raise ```mimus\Exception: limit of 1 exceeded```.
 
-```\mimus\Mock::partialize``` also accepts the name of a valid class, the call above could be written:
+```double::partialize``` also accepts the name of a valid class, the call above could be written:
 
 ```php
 /* ... */
@@ -320,27 +336,51 @@ API
 <?php
 namespace mimus {
 
-	class Mock {
+	class Double {
 		/*
-		* Shall create or return Mock builder for $class
+		* Shall create or return mock by name
 		* @param string the name of the class to mock
-		* @param string optionally prohibit resetting rules
+		* @param bool optionally prohibit resetting rules
+		* @throws LogicException if name does not exist
+		*/
+		public static function class(string $name, bool $reset = true);
+		/*
+		* Shall create or return mock by name that extends the given abstract
+		* @param string the name of the generated class
+		* @param string the name of the abstract class
+		* @param bool optionally prohibit resetting rules
+		* @throws LogicException if parent does not exist
+		*/
+		public static function abstract(string $name, string $parent, bool $reset = true);
+		/*
+		* Shall create or return mock by name that implements the given interfaces
+		* @param string the name of the generated class
+		* @param array an array of interface names
+		* @param bool optionally prohibit resetting rules
 		* @throws LogicException if class does not exist
 		*/
-		public static function of(string $class, bool $reset = true);
+		public static function interface(string $name, array $interfaces = [], bool $reset = true);
+		/*
+		* Shall create or return mock by name that implements the given interface
+		* @param string the name of the generated class
+		* @param string the name of an interface
+		* @param bool optionally prohibit resetting rules
+		* @throws LogicException if class does not exist
+		*/
+		public static function interface(string $name, string $interface, bool $reset = true);
 		
 		/*
-		* Shall turn this Mock into a Partial Mock by allowing execution of the given methods
+		* Shall turn this into a partial by allowing execution of the given methods
 		*/
 		public function partialize(array $methods = []);
 		
 		/*
-		* Shall turn this Mock into a Partial Mock by allowing execution of the methods in the given class
+		* Shall turn this into a partial by allowing execution of the methods in the given class
 		*/
 		public function partialize(string $class);
 
 		/*
-		* Shall create a new Rule for method in this builder
+		* Shall create a new Rule for method
 		* @param string the name of the method
 		* @throws LogicException if the method does not exist
 		*/

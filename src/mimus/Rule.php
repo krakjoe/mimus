@@ -3,8 +3,7 @@ namespace mimus {
 
 	class Rule {
 
-		public function __construct(Mock $mock, string $method) {
-			$this->mock = $mock;
+		public function __construct(string $method) {
 			$this->method = $method;
 		}
 
@@ -23,7 +22,6 @@ namespace mimus {
 			}
 		}
 
-		private $mock;
 		private $method;
 		private $path;
 	}

@@ -1,28 +1,54 @@
 <?php
 namespace mimus {
 
-	use Componere\Definition;
-	use Componere\Method;
+	class Double {
 
-	class Mock {
-		public /* please */ static /* don't look at my shame */
-			function of(string $class, bool $reset = true) {
-
+		public static function class(string $class, bool $reset = true) {
 			if (!class_exists($class)) {
-				throw new \LogicException("{$class} does not exist, nothing to mock");
+				throw new \LogicException(
+					"{$class} does not exist or is not a class");
 			}
 
-			if (!isset(Mock::$mocks[$class])) {
-				Mock::$mocks[$class] = new self($class);
-			} else if ($reset) {
-				Mock::$mocks[$class]->reset();
-			}
-
-			return Mock::$mocks[$class];
+			return self::definition($class, $reset);
 		}
 
-		private function __construct(string $class) {
-			$this->definition = new Definition($class);
+		public static function interface(string $name, $interfaces, bool $reset = true) {
+			if (!is_array($interfaces) && !is_string($interfaces)) {
+				throw new \LogicException(
+					"interfaces expected to be an array of, or an interface name");
+			}
+			
+			foreach ((array) $interfaces as $interface) {
+				if (!interface_exists($interface)) {
+					throw new \LogicException(
+						"{$interface} does not exist or is not an interface");
+				}
+			}
+
+			return self::definition($name, $reset, (array) $interfaces);
+		}
+
+		public static function abstract(string $name, string $parent = null, bool $reset = false) {
+			if (!class_exists($parent)) {
+				throw new \LogicException(
+					"{$parent} does not exist or is not a class");
+			}
+			return self::definition($name, $reset, $parent);
+		}
+
+		private static function definition($name, $reset, ...$args) {
+			if (!isset(Double::$doubles[$name])) {
+				double::$doubles[$name] = 
+					new self(new \Componere\Definition($name, ...$args));
+			} else if ($reset) {
+				double::$doubles[$name]->reset();
+			}
+
+			return double::$doubles[$name];
+		}
+
+		private function __construct(\Componere\Definition $definition) {
+			$this->definition = $definition;
 			$this->reflector  = $this->definition->getReflector();
 
 			foreach ($this->reflector->getMethods() as $prototype) {
@@ -33,7 +59,7 @@ namespace mimus {
 				$closure   = $this->definition->getClosure($name);
 				$table     =& $this->table[$name];
 
-				$this->definition->addMethod($name, $implementation = new Method(function(...$args) use($name, $closure, $prototype, &$table) {
+				$this->definition->addMethod($name, $implementation = new \Componere\Method(function(...$args) use($name, $closure, $prototype, &$table) {
 					$except = null;
 					$path    = null;
 
@@ -120,7 +146,7 @@ namespace mimus {
 				throw new \LogicException(
 					"method {$name} does not exist, or is whitelisted");
 			}
-			return $this->table[$name][] = new Rule($this, $name);
+			return $this->table[$name][] = new Rule($name);
 		}
 
 		public function reset(string $name = null) {
@@ -146,7 +172,7 @@ namespace mimus {
 		private $reflector;
 		private $table;
 
-		private static $mocks;
+		private static $doubles;
 	}
 
 	function printable($value) {

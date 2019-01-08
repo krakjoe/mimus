@@ -1,10 +1,12 @@
 <?php
 namespace mimus\tests {
 
+	use \mimus\Double as double;
+
 	class Path extends \PHPUnit\Framework\TestCase {
 
 		public function testLogicExceptionReturnCannotBeVoid() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$this->expectException(\LogicException::class);
 
@@ -15,7 +17,7 @@ namespace mimus\tests {
 		}
 
 		public function testLogicExceptionVoidCannotReturn() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$this->expectException(\LogicException::class);
 
@@ -26,7 +28,7 @@ namespace mimus\tests {
 		}
 
 		public function testLogicExceptionNoneExecutablePathCannotThrow() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$this->expectException(\LogicException::class);
 
@@ -36,7 +38,7 @@ namespace mimus\tests {
 		}
 
 		public function testWrongArgumentCount() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(true)
@@ -49,7 +51,7 @@ namespace mimus\tests {
 		}
 
 		public function testUnexpectedObject() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(\stdClass::class)
@@ -62,7 +64,7 @@ namespace mimus\tests {
 		}
 
 		public function testUnexpectedType() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(1)
@@ -75,7 +77,7 @@ namespace mimus\tests {
 		}
 
 		public function testUnexpectedValue() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 			$mock->rule("publicMethod")
 				->expects(true)
 				->executes(function(){});
@@ -87,7 +89,7 @@ namespace mimus\tests {
 		}
 
 		public function testExecutes() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 			$mock->rule("publicMethod")
 				->expects()
 				->executes();
@@ -104,7 +106,7 @@ namespace mimus\tests {
 		}
 
 		public function testException() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(true)
@@ -120,7 +122,7 @@ namespace mimus\tests {
 		}
 
 		public function testExpectedException() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(true)
@@ -136,7 +138,7 @@ namespace mimus\tests {
 		}
 
 		public function testReturnMissing() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(true)
@@ -152,7 +154,7 @@ namespace mimus\tests {
 		}
 
 		public function testReturnUnexpected() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 			$mock->rule("publicMethod")
 				->expects(true)
 				->executes(function(){
@@ -167,7 +169,7 @@ namespace mimus\tests {
 		}
 
 		public function testReturnTypeMismatch() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(true)
@@ -183,7 +185,7 @@ namespace mimus\tests {
 		}
 
 		public function testReturnTypeWrongObject() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(true)
@@ -199,7 +201,7 @@ namespace mimus\tests {
 		}
 
 		public function testReturnTypeCorrectObject() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(true)
@@ -214,7 +216,7 @@ namespace mimus\tests {
 		}
 
 		public function testReturnMismatch() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(true)
@@ -230,7 +232,7 @@ namespace mimus\tests {
 		}
 
 		public function testExpectsAny() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects()
@@ -245,7 +247,7 @@ namespace mimus\tests {
 		}
 
 		public function testExpectsAnyFallback() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects("unused")
@@ -265,7 +267,7 @@ namespace mimus\tests {
 		}
 
 		public function testLimitToOnce() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects()
@@ -282,7 +284,7 @@ namespace mimus\tests {
 		}
 
 		public function testLimitToNever() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects()
@@ -298,7 +300,7 @@ namespace mimus\tests {
 		}
 
 		public function testLimitToN() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects()
@@ -318,7 +320,7 @@ namespace mimus\tests {
 		}
 
 		public function testValidatorsFail() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects()
@@ -334,7 +336,7 @@ namespace mimus\tests {
 		}
 
 		public function testValidatorsSuccess() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects()

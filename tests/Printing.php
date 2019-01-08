@@ -1,10 +1,11 @@
 <?php
 namespace mimus\tests {
+	use \mimus\Double as double;
 
 	class Printing extends \PHPUnit\Framework\TestCase {
 
 		public function testPrintInt() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(42);
@@ -16,7 +17,7 @@ namespace mimus\tests {
 		}
 
 		public function testPrintDouble() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects(4.2);
@@ -28,7 +29,7 @@ namespace mimus\tests {
 		}
 
 		public function testPrintString() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects("hello");
@@ -40,7 +41,7 @@ namespace mimus\tests {
 		}
 
 		public function testPrintArray() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock = double::class(\mimus\tests\classes\Foo::class);
 
 			$mock->rule("publicMethod")
 				->expects([1,2,3]);
