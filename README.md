@@ -228,6 +228,8 @@ $object->doesSomethingAndReturnsBool(false);
 ?>
 ```
 
+While the first call will succeed and the resulting exception caught, the second will raise (uncaught): ```mimus\Exception: expected exception of type Exception, nothing thrown```.
+
 Limits
 ------
 
