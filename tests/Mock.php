@@ -7,21 +7,6 @@ namespace mimus\tests {
 
 			\mimus\Mock::of(None::class);
 		}
-		
-		public function testWhiteList() {
-			$mock = \mimus\Mock::of(\mimus\tests\classes\Bar::class, false, [
-				"publicMethodUntouched"
-			]);
-
-			$mock->rule("publicMethod")
-				->expects()
-				->returns(false);
-
-			$object = $mock->getInstance();
-
-			$this->assertTrue($object->publicMethodUntouched(true));
-			$this->assertFalse($object->publicMethod(true));
-		}
 
 		public function testMockNonExistentMethodLogicException() {
 			$mock = \mimus\Mock::of(\mimus\tests\classes\Bar::class);
@@ -29,6 +14,40 @@ namespace mimus\tests {
 			$this->expectException(\LogicException::class);
 
 			$mock->rule("nonExistentMethod");
+		}
+
+		public function testPartialLogicExceptionArgs() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+
+			$this->expectException(\LogicException::class);
+
+			$mock->partialize(42);			
+		}
+
+		public function testPartialLogicExceptionArgNotValidClass() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+
+			$this->expectException(\LogicException::class);
+
+			$mock->partialize("none");			
+		}
+
+		public function testPartialMockArray() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+			$mock->partialize([
+				"publicMethod",
+				"privateMethod",
+				"protectedMethod"
+			]);
+			$object = $mock->getInstance();
+			$this->assertFalse($object->publicMethod(true));
+		}
+
+		public function testPartialMockClass() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\FooFace::class);
+			$mock->partialize(\mimus\tests\classes\IFooFace::class);
+			$object = $mock->getInstance();
+			$this->assertFalse($object->publicMethod(true));
 		}
 
 		public function testMockGetInstanceConstructed() {

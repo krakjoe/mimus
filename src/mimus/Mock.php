@@ -6,14 +6,14 @@ namespace mimus {
 
 	class Mock {
 		public /* please */ static /* don't look at my shame */
-			function of(string $class, bool $reset = true, array $whitelist = []) {
+			function of(string $class, bool $reset = true) {
 
 			if (!class_exists($class)) {
 				throw new \LogicException("{$class} does not exist, nothing to mock");
 			}
 
 			if (!isset(Mock::$mocks[$class])) {
-				Mock::$mocks[$class] = new self($class, $whitelist);
+				Mock::$mocks[$class] = new self($class);
 			} else if ($reset) {
 				Mock::$mocks[$class]->reset();
 			}
@@ -21,7 +21,7 @@ namespace mimus {
 			return Mock::$mocks[$class];
 		}
 
-		private function __construct(string $class, array $whitelist = []) {
+		private function __construct(string $class) {
 			$this->definition = new Definition($class);
 			$this->reflector  = $this->definition->getReflector();
 
@@ -29,10 +29,6 @@ namespace mimus {
 				$name      = $prototype->getName();
 
 				$this->table[$name] = [];
-
-				if ($whitelist && in_array($name, $whitelist)) {
-					continue;
-				}
 
 				$closure   = $this->definition->getClosure($name);
 				$table     =& $this->table[$name];
@@ -89,6 +85,38 @@ namespace mimus {
 			}
 			
 			$this->definition->register();
+		}
+
+		public function partialize($on) {
+			if (!is_array($on) && !is_string($on)) {
+				throw new \LogicException(
+					"expected an array of method names or the name of a valid class");
+			}
+
+			if (is_array($on)) {
+				foreach ($on as $method) {
+					$rule = new Rule($this, $method);
+					$rule->expects()
+						->executes();
+
+					$this->table[$method][] = $rule;
+				}
+			} else {
+				try {
+					$reflector = new \ReflectionClass($on);
+				} catch (\ReflectionException $re) {
+					throw new \LogicException(
+						"expected a valid class name, {$on} cannot be loaded");
+				}
+
+				$on   = [];
+				foreach ($reflector->getMethods() as $method) {
+					$on[] = $method->getName();
+				}
+
+				$this->partialize($on);
+			}
+			
 		}
 
 		public function rule(string $name) : Rule {

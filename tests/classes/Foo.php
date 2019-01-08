@@ -1,6 +1,6 @@
 <?php
 namespace mimus\tests\classes {
-	class Foo {
+	class Foo implements IFooFace {
 
 		public function publicMethod(bool $bool) {
 			return $this->protectedMethod($bool);

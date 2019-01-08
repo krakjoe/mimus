@@ -190,7 +190,7 @@ namespace mimus\tests {
 				->executes(function(){
 					return new class{};
 				})
-				->returns(stdClass::class);
+				->returns(\stdClass::class);
 
 			$object = $mock->getInstance();
 			

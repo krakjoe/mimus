@@ -18,10 +18,19 @@ namespace mimus {
 		* Shall create or return Mock builder for $class
 		* @param string the name of the class to mock
 		* @param string optionally prohibit resetting rules
-		* @param array whitelist of method names to execute as implemented (results in partial mock)
 		* @throws LogicException if class does not exist
 		*/
-		public static function of(string $class, bool $reset = true, array $whitelist = []);
+		public static function of(string $class, bool $reset = true);
+		
+		/*
+		* Shall turn this Mock into a Partial Mock by allowing execution of the given methods
+		*/
+		public function partialize(array $methods = []);
+		
+		/*
+		* Shall turn this Mock into a Partial Mock by allowing execution of the methods in the given class
+		*/
+		public function partialize(string $class);
 
 		/*
 		* Shall create a new Rule for method in this builder
