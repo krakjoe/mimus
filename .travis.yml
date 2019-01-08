@@ -36,7 +36,7 @@ before_script:
   - mkdir -p build/logs
 
 script:
-  - phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=build/logs/coverage.xml
+  - phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=build/logs/clover.xml
 
 after_success:
   - vendor/bin/php-coveralls -v
