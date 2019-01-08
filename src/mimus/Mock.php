@@ -95,11 +95,9 @@ namespace mimus {
 
 			if (is_array($on)) {
 				foreach ($on as $method) {
-					$rule = new Rule($this, $method);
-					$rule->expects()
+					$this->rule($method)
+						->expects()
 						->executes();
-
-					$this->table[$method][] = $rule;
 				}
 			} else {
 				try {
@@ -109,14 +107,12 @@ namespace mimus {
 						"expected a valid class name, {$on} cannot be loaded");
 				}
 
-				$on   = [];
 				foreach ($reflector->getMethods() as $method) {
-					$on[] = $method->getName();
+					$this->rule($method->getName())
+						->expects()
+						->executes();
 				}
-
-				$this->partialize($on);
 			}
-			
 		}
 
 		public function rule(string $name) : Rule {
