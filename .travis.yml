@@ -1,6 +1,5 @@
 language: php
-compiler:
-  - gcc
+
 php:
   - 7.1
   - 7.2
@@ -34,7 +33,7 @@ install:
   - composer install
 
 script:
-  - vendor/bin/phpunit --coverage-text --coverage-clover=$HOME/coverage.xml
+  - phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=$HOME/coverage.xml
 
 after_success:
   - composer require satooshi/php-coveralls
