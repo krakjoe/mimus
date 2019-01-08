@@ -26,11 +26,13 @@ namespace mimus\tests {
 		}
 
 		public function testInterfaceMock() {
-			$mock = double::interface(myinterface::class, \mimus\tests\classes\IFooFace::class);
+			$mock = double::interface(myinterface::class, 
+					\mimus\tests\classes\IFooFace::class);
 
 			$object = $mock->getInstance();
 
 			$this->assertInstanceOf(\mimus\tests\classes\IFooFace::class, $object);
+			$this->assertInstanceOf(myinterface::class, $object);
 		}
 
 		public function testInterfacesMock() {
@@ -104,7 +106,8 @@ namespace mimus\tests {
 		}
 
 		public function testMockGetInstanceConstructed() {
-			$mock = double::class(\mimus\tests\classes\Qux::class, false, [
+			$mock = double::class(\mimus\tests\classes\Qux::class);
+			$mock->partialize([
 				"__construct"
 			]);
 

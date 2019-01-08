@@ -165,7 +165,7 @@ namespace mimus {
 			if (!func_num_args()) {
 				return $this->reflector->newInstanceWithoutConstructor();
 			}
-			return $this->reflector->newInstanceArgs(...$args);
+			return $this->reflector->newInstanceArgs($args);
 		}
 
 		private $definition;
