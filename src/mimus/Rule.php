@@ -21,8 +21,6 @@ namespace mimus {
 			if ($this->path->try($except, $count, ...$args)) {
 				return $this->path;
 			}
-
-			return null;
 		}
 
 		private $mock;
