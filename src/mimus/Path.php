@@ -40,6 +40,11 @@ namespace mimus {
 		}
 
 		public function throws(string $class) : Path {
+			if ($this->executes === false) {
+				throw new \LogicException(
+					"non executable path cannot throw");
+			}
+
 			$this->throws = $class;
 
 			return $this;

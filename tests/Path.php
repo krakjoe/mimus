@@ -25,6 +25,16 @@ namespace mimus\tests {
 				->returns(true);
 		}
 
+		public function testLogicExceptionNoneExecutablePathCannotThrow() {
+			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
+
+			$this->expectException(\LogicException::class);
+
+			$mock->rule("publicMethod")
+				->expects()
+				->throws(\Throwable::class);
+		}
+
 		public function testWrongArgumentCount() {
 			$mock = \mimus\Mock::of(\mimus\tests\classes\Foo::class);
 

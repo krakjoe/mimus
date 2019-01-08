@@ -77,6 +77,7 @@ namespace mimus {
 		* Shall tell mimus what this path should throw
 		* @param string the name of the exception expected
 		* Note: If Path::throws is not invoked, any exception is allowed for this Path
+		* @throws LogicException for non executable Path
 		*/
 		public function throws(string $class) : Path;
 
