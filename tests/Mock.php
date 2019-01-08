@@ -48,19 +48,9 @@ namespace mimus\tests {
 		}
 
 		public function testAbstractMock() {
-			$builder = double::abstract(myabstract::class, 
-				\mimus\tests\classes\AbstractFoo::class);
-
-			$object = $builder->getInstance();
-
-			$this->assertInstanceOf(\mimus\tests\classes\AbstractFoo::class, $object);
-			$this->assertInstanceOf(myabstract::class, $object);
-		}
-
-		public function testAbstractMockNonExistentClass() {
 			$this->expectException(\LogicException::class);
-
-			double::abstract(myabstract::class, None::class);
+			$builder = double::class(myabstract::class, 
+				\mimus\tests\classes\AbstractFoo::class);
 		}
 		
 		public function testMockNonExistentMethodLogicException() {

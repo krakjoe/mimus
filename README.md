@@ -329,6 +329,38 @@ $builder->partialize(IFace::class);
 /* ... */
 ```
 
+Interfaces
+==========
+
+It is sometimes useful to mock an interface without an implementation, we can use a test double for this:
+
+```php
+<?php
+require "vendor/autoload.php";
+
+use mimus\Double as double;
+
+interface IFace {
+	public function publicMethod();
+}
+
+$builder = double::interface(
+		myinterfaces::class, IFace::class);
+
+$builder->rule("publicMethod")
+	->expects()
+	->executes(function(){
+		return true;
+	});
+
+$object = $builder->getInstance();
+
+var_dump($object->publicMethod());  // bool(true)
+```
+
+The ```$object``` will be ```instanceof IFace``` with the name ```myinterface```. You may implement multiple interfaces
+by passing an array of interface names as the second argument to ```Double::interface```.
+
 API
 ===
 
@@ -344,14 +376,7 @@ namespace mimus {
 		* @throws LogicException if name does not exist
 		*/
 		public static function class(string $name, bool $reset = true);
-		/*
-		* Shall create or return mock by name that extends the given abstract
-		* @param string the name of the generated class
-		* @param string the name of the abstract class
-		* @param bool optionally prohibit resetting rules
-		* @throws LogicException if parent does not exist
-		*/
-		public static function abstract(string $name, string $parent, bool $reset = true);
+
 		/*
 		* Shall create or return mock by name that implements the given interfaces
 		* @param string the name of the generated class
@@ -360,6 +385,7 @@ namespace mimus {
 		* @throws LogicException if class does not exist
 		*/
 		public static function interface(string $name, array $interfaces = [], bool $reset = true);
+
 		/*
 		* Shall create or return mock by name that implements the given interface
 		* @param string the name of the generated class

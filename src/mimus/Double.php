@@ -28,14 +28,6 @@ namespace mimus {
 			return self::definition($name, $reset, (array) $interfaces);
 		}
 
-		public static function abstract(string $name, string $parent = null, bool $reset = false) {
-			if (!class_exists($parent)) {
-				throw new \LogicException(
-					"{$parent} does not exist or is not a class");
-			}
-			return self::definition($name, $reset, $parent);
-		}
-
 		private static function definition($name, $reset, ...$args) {
 			if (!isset(Double::$doubles[$name])) {
 				double::$doubles[$name] = 
@@ -50,6 +42,11 @@ namespace mimus {
 		private function __construct(\Componere\Definition $definition) {
 			$this->definition = $definition;
 			$this->reflector  = $this->definition->getReflector();
+
+			if ($this->reflector->isAbstract()) {
+				throw new \LogicException(
+					"cannot mock an abstract class");
+			}
 
 			foreach ($this->reflector->getMethods() as $prototype) {
 				$name      = $prototype->getName();
