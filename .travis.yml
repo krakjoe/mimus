@@ -1,12 +1,15 @@
-sudo: false
-
 language: php
+compiler:
+  - gcc
+php:
+  - 7.1
+  - 7.2
+  - 7.3
 
-matrix:
-  include:
-    - php: 7.1
-    - php: 7.2
-    - php: 7.3
+env:
+  matrix:
+    - OPCACHE=0
+    - OPCACHE=1
 
 cache:
   directories:
@@ -14,20 +17,26 @@ cache:
 
 before_install:
   - alias composer=composer\ -n && composer self-update
-
-install:
-  - composer install
-
-before_script:
   - git clone https://github.com/krakjoe/componere $HOME/componere
   - cd $HOME/componere
   - phpize
   - ./configure
   - make
   - make install
+  - cd $TRAVIS_BUILD_DIR
+
+install:
+  - composer install
+
+before_script:
+  - echo "variables_order=EGPCS"                >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/php.ini
+  - echo                                        >  $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
+  - echo "extension=componere.so"               >  $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/componere.ini
+  - echo "opcache.optimization_level=0"         >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
+  - echo "opcache.enable_cli=$OPCACHE"          >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
 
 script:
-  - php -n -dextension=componere.so vendor/bin/phpunit --coverage-text --coverage-clover=$HOME/coverage.xml
+  - vendor/bin/phpunit --coverage-text --coverage-clover=$HOME/coverage.xml
 
 after_success:
   - composer require satooshi/php-coveralls
