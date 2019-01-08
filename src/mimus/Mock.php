@@ -111,7 +111,7 @@ namespace mimus {
 			}
 		}
 
-		public function getInstance(...$args) : object {
+		public function getInstance(...$args) {
 			if (!func_num_args()) {
 				return $this->reflector->newInstanceWithoutConstructor();
 			}
