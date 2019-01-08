@@ -32,11 +32,11 @@ before_install:
 install:
   - composer install
 
+before_script:
+  - mkdir -p build/logs
+
 script:
-  - phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=$HOME/coverage.xml
+  - phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=build/logs/coverage.xml
 
 after_success:
-  - composer require satooshi/php-coveralls
-  - vendor/bin/coveralls -v
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover $HOME/coverage.xml
+  - vendor/bin/php-coveralls -v
