@@ -13,7 +13,7 @@ Requirements
 Doubles
 =======
 
-A test double is an object that takes the place of an existing object of a formal type while a system is under test.
+A test double is an object that takes the place of an object of a formal type while a system is under test:
 
 ```php
 <?php
@@ -29,11 +29,11 @@ class Foo {
 	}
 }
 
-$mock = double::class(Foo::class);
+$builder = double::class(Foo::class);
 ?>
 ```
 
-At this time, the definition of ```Foo``` has been replaced with a double, it has the same interface as ```Foo``` but none of the methods do anything - they have been stubbed. The ```$mock``` object returns is not an instance of ```Foo``, but a builder object.
+At this time, the definition of ```Foo``` has been replaced with a double, it has the same interface as ```Foo``` but none of the methods do anything - they have been stubbed.
 
 Stubs
 =====
@@ -54,13 +54,13 @@ class Foo {
 	}
 }
 
-$mock = double::class(Foo::class);
+$builder = double::class(Foo::class);
 
-$mock->rule("doesSomethingAndReturnsBool")
+$builder->rule("doesSomethingAndReturnsBool")
 	->expects() /* take any arguments */
 	->returns(true); /* return true; */
 
-$object = $mock->getInstance();
+$object = $builder->getInstance();
 
 var_dump($object->doesSomethingAndReturnsBool()); // bool(true)
 ?>
@@ -82,16 +82,16 @@ class Foo {
 	}
 }
 
-$mock = double::class(Foo::class);
+$builder = double::class(Foo::class);
 
-$mock->rule("doesSomethingAndReturnsBool")
+$builder->rule("doesSomethingAndReturnsBool")
 	->expects(true) /* takes these arguments */
 	->returns(true); /* return true; */
-$mock->rule("doesSomethingAndReturnsBool")
+$builder->rule("doesSomethingAndReturnsBool")
 	->expects(false) /* takes these arguments */
 	->returns(false); /* return false; */
 
-$object = $mock->getInstance();
+$object = $builder->getInstance();
 
 var_dump($object->doesSomethingAndReturnsBool(true)); // bool(true)
 var_dump($object->doesSomethingAndReturnsBool(false)); // bool(false)
@@ -137,18 +137,18 @@ class Foo {
 	}
 }
 
-$mock = double::class(Foo::class);
+$builder = double::class(Foo::class);
 
-$mock->rule("doesSomethingAndReturnsBool")
+$builder->rule("doesSomethingAndReturnsBool")
 	->expects("yes")
 	->executes() // executes original
 	->returns(true);
-$mock->rule("doesSomethingAndReturnsBool")
+$builder->rule("doesSomethingAndReturnsBool")
 	->expects("no")
 	->executes() // executes original
 	->returns(false);
 
-$object = $mock->getInstance();
+$object = $builder->getInstance();
 
 var_dump($object->doesSomethingAndReturnsBool("yes")); // bool(true)
 var_dump($object->doesSomethingAndReturnsBool("no"));
@@ -177,19 +177,19 @@ class Foo {
 	}
 }
 
-$mock = double::class(Foo::class);
+$builder = double::class(Foo::class);
 
-$mock->rule("doesSomethingAndReturnsBool")
+$builder->rule("doesSomethingAndReturnsBool")
 	->expects("yes")
 	->executes() // executes original code
 	->returns(true);
-$mock->rule("doesSomethingAndReturnsBool")
+$builder->rule("doesSomethingAndReturnsBool")
 	->expects("no")
 	->executes(function(){
 		return false;
 	}); // no need for returns()
 
-$object = $mock->getInstance();
+$object = $builder->getInstance();
 
 var_dump($object->doesSomethingAndReturnsBool("yes")); // bool(true)
 var_dump($object->doesSomethingAndReturnsBool("no"));  // bool(false)
@@ -219,18 +219,18 @@ class Foo {
 	}
 }
 
-$mock = double::class(Foo::class);
+$builder = double::class(Foo::class);
 
-$mock->rule("doesSomethingAndReturnsBool")
+$builder->rule("doesSomethingAndReturnsBool")
 	->expects(true)
 	->executes()
 	->throws(Exception::class);
-$mock->rule("doesSomethingAndReturnsBool")
+$builder->rule("doesSomethingAndReturnsBool")
 	->expects(false)
 	->executes()
 	->throws(Exception::class);
 
-$object = $mock->getInstance();
+$object = $builder->getInstance();
 
 try {
 	$object->doesSomethingAndReturnsBool(true);
@@ -263,14 +263,14 @@ class Foo {
 	}
 }
 
-$mock = double::class(Foo::class);
+$builder = double::class(Foo::class);
 
-$mock->rule("doesSomethingAndReturnsBool")
+$builder->rule("doesSomethingAndReturnsBool")
 	->expects(true)
 	->returns(true)
 	->once(); // limit() and never() also available
 
-$object = $mock->getInstance();
+$object = $builder->getInstance();
 
 var_dump($object->doesSomethingAndReturnsBool(true)); // bool(true)
 var_dump($object->doesSomethingAndReturnsBool(true));
@@ -305,15 +305,15 @@ class Foo implements IFace {
 	}
 }
 
-$mock = double::class(Foo::class);
-$mock->partialize([
+$builder = double::class(Foo::class);
+$builder->partialize([
 	"interfaceMethod"
 ]);
-$mock->rule("nonInterfaceMethod")
+$builder->rule("nonInterfaceMethod")
 	->expects()
 	->never();
 
-$object = $mock->getInstance();
+$object = $builder->getInstance();
 
 var_dump($object->interfaceMethod());    // bool(true)
 var_dump($object->nonInterfaceMethod());
@@ -325,7 +325,7 @@ While the first call will be executed as implemented, the second will raise ```m
 
 ```php
 /* ... */
-$mock->partialize(IFace::class);
+$builder->partialize(IFace::class);
 /* ... */
 ```
 

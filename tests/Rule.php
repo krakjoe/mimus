@@ -5,9 +5,9 @@ namespace mimus\tests {
 	class Rule extends \PHPUnit\Framework\TestCase {
 
 		public function testExpectationAlreadySet() {
-			$mock = double::class(\mimus\tests\classes\Foo::class);
+			$builder = double::class(\mimus\tests\classes\Foo::class);
 
-			$rule = $mock->rule("publicMethod");
+			$rule = $builder->rule("publicMethod");
 			
 			$rule->expects();
 

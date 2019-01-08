@@ -18,40 +18,40 @@ namespace mimus\tests {
 		}
 
 		public function testClassMock() {
-			$mock = double::class(\mimus\tests\classes\Foo::class);
+			$builder = double::class(\mimus\tests\classes\Foo::class);
 
-			$object = $mock->getInstance();
+			$object = $builder->getInstance();
 
 			$this->assertInstanceOf(\mimus\tests\classes\Foo::class, $object);
 		}
 
 		public function testInterfaceMock() {
-			$mock = double::interface(myinterface::class, 
+			$builder = double::interface(myinterface::class, 
 					\mimus\tests\classes\IFooFace::class);
 
-			$object = $mock->getInstance();
+			$object = $builder->getInstance();
 
 			$this->assertInstanceOf(\mimus\tests\classes\IFooFace::class, $object);
 			$this->assertInstanceOf(myinterface::class, $object);
 		}
 
 		public function testInterfacesMock() {
-			$mock = double::interface(myinterfaces::class, [
+			$builder = double::interface(myinterfaces::class, [
 				\mimus\tests\classes\IFooFace::class,
 				\mimus\tests\classes\IFooFaceTwo::class,
 			]);
 
-			$object = $mock->getInstance();
+			$object = $builder->getInstance();
 
 			$this->assertInstanceOf(\mimus\tests\classes\IFooFace::class, $object);
 			$this->assertInstanceOf(\mimus\tests\classes\IFooFaceTwo::class, $object);
 		}
 
 		public function testAbstractMock() {
-			$mock = double::abstract(myabstract::class, 
+			$builder = double::abstract(myabstract::class, 
 				\mimus\tests\classes\AbstractFoo::class);
 
-			$object = $mock->getInstance();
+			$object = $builder->getInstance();
 
 			$this->assertInstanceOf(\mimus\tests\classes\AbstractFoo::class, $object);
 			$this->assertInstanceOf(myabstract::class, $object);
@@ -64,55 +64,55 @@ namespace mimus\tests {
 		}
 		
 		public function testMockNonExistentMethodLogicException() {
-			$mock = double::class(\mimus\tests\classes\Bar::class);
+			$builder = double::class(\mimus\tests\classes\Bar::class);
 
 			$this->expectException(\LogicException::class);
 
-			$mock->rule("nonExistentMethod");
+			$builder->rule("nonExistentMethod");
 		}
 
 		public function testPartialLogicExceptionArgs() {
-			$mock = double::class(\mimus\tests\classes\Foo::class);
+			$builder = double::class(\mimus\tests\classes\Foo::class);
 
 			$this->expectException(\LogicException::class);
 
-			$mock->partialize(42);			
+			$builder->partialize(42);			
 		}
 
 		public function testPartialLogicExceptionArgNotValidClass() {
-			$mock = double::class(\mimus\tests\classes\Foo::class);
+			$builder = double::class(\mimus\tests\classes\Foo::class);
 
 			$this->expectException(\LogicException::class);
 
-			$mock->partialize("none");			
+			$builder->partialize("none");			
 		}
 
 		public function testPartialMockArray() {
-			$mock = double::class(\mimus\tests\classes\Foo::class);
-			$mock->partialize([
+			$builder = double::class(\mimus\tests\classes\Foo::class);
+			$builder->partialize([
 				"publicMethod",
 				"privateMethod",
 				"protectedMethod"
 			]);
-			$object = $mock->getInstance();
+			$object = $builder->getInstance();
 			$this->assertFalse($object->publicMethod(true));
 		}
 
 		public function testPartialMockClass() {
-			$mock = double::class(\mimus\tests\classes\FooFace::class);
-			$mock->partialize(\mimus\tests\classes\IFooFace::class);
-			$object = $mock->getInstance();
+			$builder = double::class(\mimus\tests\classes\FooFace::class);
+			$builder->partialize(\mimus\tests\classes\IFooFace::class);
+			$object = $builder->getInstance();
 			$this->assertFalse($object->publicMethod(true));
 		}
 
 		public function testMockGetInstanceConstructed() {
-			$mock = double::class(\mimus\tests\classes\Qux::class);
-			$mock->partialize([
+			$builder = double::class(\mimus\tests\classes\Qux::class);
+			$builder->partialize([
 				"__construct"
 			]);
 
 			$this->expectException(\Error::class);
-			$mock->getInstance(true);
+			$builder->getInstance(true);
 		}
 	}
 }
