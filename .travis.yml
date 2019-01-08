@@ -1,0 +1,36 @@
+sudo: false
+
+language: php
+
+matrix:
+  include:
+    - php: 7.1
+    - php: 7.2
+    - php: 7.3
+
+cache:
+  directories:
+    - .composer/cache
+
+before_install:
+  - alias composer=composer\ -n && composer self-update
+
+install:
+  - composer install
+
+before_script:
+  - git clone https://github.com/krakjoe/componere $HOME/componere
+  - cd $HOME/componere
+  - phpize
+  - ./configure
+  - make
+  - make install
+
+script:
+  - php -n -dextension=componere.so vendor/bin/phpunit --coverage-text --coverage-clover=$HOME/coverage.xml
+
+after_success:
+  - composer require satooshi/php-coveralls
+  - vendor/bin/coveralls -v
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover $HOME/coverage.xml
