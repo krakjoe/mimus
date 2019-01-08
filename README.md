@@ -13,7 +13,7 @@ Requirements
 Doubles
 =======
 
-A test double is an object that takes the place of an existing class while a system is under test, it has the type of the object it usurps.
+A test double is an object that takes the place of an existing object of a formal type while a system is under test.
 
 ```php
 <?php
@@ -33,7 +33,7 @@ $mock = double::class(Foo::class);
 ?>
 ```
 
-At this time, the definition of ```Foo``` has been replaced with a double, it has the same interface as ```Foo``` but none of the methods do anything - they have been stubbed.
+At this time, the definition of ```Foo``` has been replaced with a double, it has the same interface as ```Foo``` but none of the methods do anything - they have been stubbed. The ```$mock``` object returns is not an instance of ```Foo``, but a builder object.
 
 Stubs
 =====
