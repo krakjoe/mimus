@@ -16,7 +16,7 @@ Doubles
 
 A test double is a class that takes the place of an existing class while a system is under test.
 
-```
+```php
 <?php
 require "vendor/autoload.php";
 
@@ -39,7 +39,7 @@ Stubs
 
 To make the stubs do something, you must tell ```mimus``` what the method should, or will do:
 
-```
+```php
 <?php
 require "vendor/autoload.php";
 
@@ -65,7 +65,7 @@ var_dump($object->doesSomethingAndReturnsBool()); // bool(true)
 
 In some cases, our method needs to return a different value for different input:
 
-```
+```php
 <?php
 require "vendor/autoload.php";
 
@@ -95,7 +95,7 @@ var_dump($object->doesSomethingAndReturnsBool(false)); // bool(false)
 
 At this time, we have defined two valid paths through the method based on the arguments given at runtime, should the method be invoked like this:
 
-```
+```php
 <?php
 var_dump($object->doesSomethingAndReturnsBool("mimus"));
 ```
@@ -118,7 +118,7 @@ Execute Original Implementation
 
 Suppose we want to allow the original implementation to execute, and to ensure that the return value is as expected:
 
-```
+```php
 <?php
 require "vendor/autoload.php";
 
@@ -156,7 +156,7 @@ Execute Different Implementation
 
 Suppose we want to execute a different implementation in place of the original:
 
-```
+```php
 <?php
 require "vendor/autoload.php";
 
@@ -192,7 +192,7 @@ Exceptions
 
 Suppose we want to verify that a Path throws an exception:
 
-```
+```php
 <?php
 require "vendor/autoload.php";
 
@@ -234,7 +234,7 @@ Limits
 
 Suppose we want to limit the number of times a method is entered:
 
-```
+```php
 <?php
 require "vendor/autoload.php";
 
@@ -265,7 +265,7 @@ While the first call will succeed, the second will raise: ```mimus\Exception: li
 API
 ===
 
-```
+```php
 <?php
 namespace mimus {
 
