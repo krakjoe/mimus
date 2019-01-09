@@ -361,7 +361,7 @@ $object = $builder->getInstance();
 var_dump($object->publicMethod());  // bool(true)
 ```
 
-The ```$object``` will be ```instanceof IFace``` with the name ```myinterface```.
+The ```$object``` will be ```instanceof IFace``` with the name ```myinterfaces```.
 
 API
 ===
