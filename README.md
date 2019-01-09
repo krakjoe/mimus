@@ -344,8 +344,11 @@ interface IFace {
 	public function publicMethod();
 }
 
-$builder = double::interface(
-		myinterfaces::class, IFace::class);
+$builder = double::make(myinterfaces::class, [
+	[
+		IFace::class
+	]
+]);
 
 $builder->rule("publicMethod")
 	->expects()
@@ -358,8 +361,7 @@ $object = $builder->getInstance();
 var_dump($object->publicMethod());  // bool(true)
 ```
 
-The ```$object``` will be ```instanceof IFace``` with the name ```myinterface```. You may implement multiple interfaces
-by passing an array of interface names as the second argument to ```Double::interface```.
+The ```$object``` will be ```instanceof IFace``` with the name ```myinterface```.
 
 API
 ===
@@ -379,23 +381,11 @@ namespace mimus {
 		public static function class(string $name, bool $reset = true);
 
 		/*
-		* Shall create or return mock by name that implements the given interfaces
-		* @param string the name of the generated class
-		* @param array an array of interface names
-		* @param bool optionally prohibit resetting rules
-		* @throws LogicException if class does not exist
+		* Shall create a mock by name
+		* @see \Componere\Definition::__construct
 		*/
-		public static function interface(string $name, array $interfaces = [], bool $reset = true);
+		public static function make(string $name, mixed $args, bool $reset = true);
 
-		/*
-		* Shall create or return mock by name that implements the given interface
-		* @param string the name of the generated class
-		* @param string the name of an interface
-		* @param bool optionally prohibit resetting rules
-		* @throws LogicException if class does not exist
-		*/
-		public static function interface(string $name, string $interface, bool $reset = true);
-		
 		/*
 		* Shall turn this into a partial by allowing execution of the given methods
 		*/

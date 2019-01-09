@@ -12,20 +12,8 @@ namespace mimus {
 			return self::definition($class, $reset);
 		}
 
-		public static function interface(string $name, $interfaces, bool $reset = true) {
-			if (!is_array($interfaces) && !is_string($interfaces)) {
-				throw new \LogicException(
-					"interfaces expected to be an array of, or an interface name");
-			}
-			
-			foreach ((array) $interfaces as $interface) {
-				if (!interface_exists($interface)) {
-					throw new \LogicException(
-						"{$interface} does not exist or is not an interface");
-				}
-			}
-
-			return self::definition($name, $reset, (array) $interfaces);
+		public static function make(string $name, array $args, bool $reset = true) {
+			return self::definition($name, $reset, ...$args);
 		}
 
 		private static function definition($name, $reset, ...$args) {
