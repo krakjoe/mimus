@@ -378,23 +378,41 @@ namespace mimus {
 		* @throws LogicException if name does not exist
 		* @throws LogicException if name is the name of an abstract class
 		*/
-		public static function class(string $name, bool $reset = true);
+		public static function class(string $name, bool $reset = true) : Double;
 
 		/*
 		* Shall create a mock by name
 		* @see \Componere\Definition::__construct
 		*/
-		public static function make(string $name, mixed $args, bool $reset = true);
+		public static function make(string $name, mixed $args, bool $reset = true) : Double;
+
+		/*
+		* Shall implement the given interface
+		* @param name of interface
+		* @param optionally partialize on interface
+		* @throws LogicException if invoked after rule() or getInstance()
+		* @throws LogicException if not a valid interface
+		*/
+		public function implements(string $interface, bool $partialize = false) : Double;
+
+		/*
+		* Shall use the given trait
+		* @param name of trait
+		* @param optionally partialize on trait
+		* @throws LogicException if invoked after rule() or getInstance()
+		* @throws LogicException if not a valid trait
+		*/
+		public function use(string $interface, bool $partialize = false) : Double;
 
 		/*
 		* Shall turn this into a partial by allowing execution of the given methods
 		*/
-		public function partialize(array $methods = []);
+		public function partialize(array $methods = []) : Double;
 		
 		/*
 		* Shall turn this into a partial by allowing execution of the methods in the given class
 		*/
-		public function partialize(string $class);
+		public function partialize(string $class) : Double;
 
 		/*
 		* Shall create a new Rule for method

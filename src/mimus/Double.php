@@ -31,20 +31,30 @@ namespace mimus {
 			$this->definition = $definition;
 			$this->reflector  = $this->definition->getReflector();
 
+			foreach ($this->reflector->getInterfaceNames() as $interface) {
+				$this->interfaces[$interface] = true;
+			}
+
 			if ($this->reflector->isAbstract()) {
 				throw new \LogicException(
 					"cannot mock an abstract class");
 			}
+		}
+
+		private function build() {
+			$closures = $this->definition->getClosures();
 
 			foreach ($this->reflector->getMethods() as $prototype) {
+				$static    = $prototype->isStatic();
 				$name      = $prototype->getName();
+				$closure   = $closures[$name];
 
 				$this->table[$name] = [];
 
-				$closure   = $this->definition->getClosure($name);
 				$table     =& $this->table[$name];
 
-				$this->definition->addMethod($name, $implementation = new \Componere\Method(function(...$args) use($name, $closure, $prototype, &$table) {
+				$implementation = new \Componere\Method(function(...$args) 
+							use($static, $closure, &$table) {
 					$except = null;
 					$path    = null;
 
@@ -69,33 +79,89 @@ namespace mimus {
 						throw $except;
 					}
 
-					if ($prototype->isStatic()) {
+					if ($static) {
 						return $path->travel(null, $closure, ...$args);
 					}
 
 					return $path->travel($this, $closure, ...$args);
-				}));
+				});
 
-				if ($prototype) {
-					if ($prototype->isStatic()) {
-						$implementation->setStatic();
-					}
-
-					if ($prototype->isPrivate()) {
-						$implementation->setPrivate();
-					}
-
-					if ($prototype->isProtected()) {
-						$implementation->setProtected();
-					}
-
-					if ($prototype->isFinal()) {
-						$implementation->setFinal();
-					}
+				if ($static) {
+					$implementation->setStatic();
 				}
+
+				if ($prototype->isPrivate()) {
+					$implementation->setPrivate();
+				} else if ($prototype->isProtected()) {
+					$implementation->setProtected();
+				}
+
+				if ($prototype->isFinal()) {
+					$implementation->setFinal();
+				}
+
+				$this->definition->addMethod($name, $implementation);
 			}
 			
-			$this->definition->register();
+			$this->definition->register();		
+		}
+
+		public function use(string $class, bool $partialize = false) : Double {
+			if (isset($this->traits[$class])) {
+				if ($partialize) {
+					$this->partialize($class);
+				}
+				return $this;
+			}
+
+			if ($this->definition->isRegistered()) {
+				throw new \LogicException(
+					"use() must be invoked before rule() or getInstance()");
+			}
+
+			if (!trait_exists($class)) {
+				throw new \LogicException(
+					"trait {$class} does not exist, or is not a trait");
+			}
+
+			$this->definition->addTrait($class);
+
+			if ($partialize) {
+				$this->partialize($class);
+			}
+
+			$this->traits[$class] = true;
+
+			return $this;
+		}
+
+		public function implements(string $class, bool $partialize = false) : Double {
+			if (isset($this->interfaces[$class])) {
+				if ($partialize) {
+					$this->partialize($class);
+				}
+				return $this;
+			}
+
+			if ($this->definition->isRegistered()) {
+				throw new \LogicException(
+					"implements() must be invoked before rule() or getInstance()");
+			}
+
+			if (!interface_exists($class)) {
+				throw new \LogicException(
+					"interface {$class} does not exist, or is not an interface");
+			}
+
+			$this->definition->addInterface($class);
+
+			if ($partialize) {
+				$this->partialize($class);
+			}
+
+			$this->interfaces[$class] = true;
+
+			return $this;
 		}
 
 		public function partialize($on) {
@@ -106,7 +172,8 @@ namespace mimus {
 
 			if (is_array($on)) {
 				foreach ($on as $method) {
-					$this->rule($method)
+					$this->reset($method);
+					$this->rule($method) /* must be first rule */
 						->expects()
 						->executes();
 				}
@@ -119,6 +186,7 @@ namespace mimus {
 				}
 
 				foreach ($reflector->getMethods() as $method) {
+					$this->reset($method->getName());
 					$this->rule($method->getName())
 						->expects()
 						->executes();
@@ -127,6 +195,10 @@ namespace mimus {
 		}
 
 		public function rule(string $name) : Rule {
+			if (!$this->definition->isRegistered()) {
+				$this->build();
+			}
+
 			if (!isset($this->table[$name])) {
 				throw new \LogicException(
 					"method {$name} does not exist, or is whitelisted");
@@ -135,6 +207,10 @@ namespace mimus {
 		}
 
 		public function reset(string $name = null) {
+			if (!$this->definition->isRegistered()) {
+				return;
+			}
+
 			if ($name === null) {
 				foreach ($this->table as $name => $rules) {
 					$this->reset($name);
@@ -147,6 +223,10 @@ namespace mimus {
 		}
 
 		public function getInstance(...$args) {
+			if (!$this->definition->isRegistered()) {
+				$this->build();
+			}
+
 			if (!func_num_args()) {
 				return $this->reflector->newInstanceWithoutConstructor();
 			}
@@ -154,6 +234,8 @@ namespace mimus {
 		}
 
 		private $definition;
+		private $traits     = [];
+		private $interfaces = [];
 		private $reflector;
 		private $table;
 

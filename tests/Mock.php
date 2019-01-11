@@ -69,6 +69,130 @@ namespace mimus\tests {
 			$builder->rule("nonExistentMethod");
 		}
 
+		public function testMockImplementsClassDoesNotExist() {
+			$builder = double::class(\mimus\tests\classes\NoFooFace::class);
+
+			$this->expectException(\LogicException::class);
+
+			$builder->implements(\mimus\tests\classes\IFooFaceDoesNotExist::class);
+		}
+
+		public function testMockImplements() {
+			$builder = double::class(\mimus\tests\classes\NoFooFace::class);
+			$builder->implements(\mimus\tests\classes\IFooFace::class);
+
+			$object = $builder->getInstance();
+
+			$this->assertInstanceOf(\mimus\tests\classes\IFooFace::class, $object);
+		}
+
+		public function testMockImplementsPartial() {
+			$builder = double::class(\mimus\tests\classes\NoFooFacePartial::class);
+			$builder->implements(\mimus\tests\classes\NoFooFacePartialInterface::class, true);
+
+			$object = $builder->getInstance();
+
+			$this->assertInstanceOf(\mimus\tests\classes\NoFooFacePartialInterface::class, $object);
+			$this->assertTrue($object->partialized(false));
+			$this->assertNull($object->notPartialized(false));
+		}
+
+		public function testMockUsesNonTrait() {
+			$builder = double::class(\mimus\tests\classes\FooFaceNoUse::class);
+
+			$this->expectException(\LogicException::class);
+
+			$builder->use(\mimus\tests\classes\NoFooFacePartialInterface::class);
+		}
+
+		public function testMockUses() {
+			$builder = double::class(\mimus\tests\classes\FooFaceNoUse::class);
+			$builder->use(\mimus\tests\classes\FooFaceTrait::class)
+				->rule("nonTraitMethod")
+				->expects()
+				->executes();
+			$builder->rule("traitMethod")
+				->expects()
+				->executes();
+
+			$object = $builder->getInstance();
+
+			$this->assertFalse($object->nonTraitMethod()); /* comes from class */
+			$this->assertTrue($object->traitMethod()); /* comes from trait */
+		}
+
+		public function testMockUsesAlreadyRegisteredException() {
+			$builder = double::class(\mimus\tests\classes\FooFaceNoUse::class);
+
+			$this->expectException(\LogicException::class);
+
+			$builder->use(\mimus\tests\classes\FooFaceTraitUnused::class);
+		}
+
+		public function testMockUsesAlreadyRegisteredOkay() {
+			/* this only seems to be a duplicate test */
+			$builder = double::class(\mimus\tests\classes\FooFaceNoUse::class);
+
+			$builder->use(\mimus\tests\classes\FooFaceTrait::class)
+				->rule("nonTraitMethod")
+				->expects()
+				->executes();
+			$builder->rule("traitMethod")
+				->expects()
+				->executes();
+
+			$object = $builder->getInstance();
+
+			$this->assertFalse($object->nonTraitMethod()); /* comes from class */
+			$this->assertTrue($object->traitMethod()); /* comes from trait */
+		}
+
+		public function testMockUsesPartial() {
+			$builder = double::class(\mimus\tests\classes\FooFaceNoUse::class);
+			$builder->use(\mimus\tests\classes\FooFaceTrait::class, true);
+
+			$object = $builder->getInstance();
+
+			$this->assertTrue($object->traitMethod());
+		}
+
+		public function testMockUsesUnregisteredPartial() {
+			$builder = double::class(\mimus\tests\classes\FooFaceNoRegister::class);
+			$builder->use(\mimus\tests\classes\FooFaceTrait::class, true);
+
+			$object = $builder->getInstance();
+
+			$this->assertTrue($object->traitMethod());
+		}
+
+		public function testMockImplementsAlreadyRegistered() {
+			$builder = double::class(\mimus\tests\classes\NoFooFace::class);
+
+			$object = $builder->getInstance();
+
+			$this->assertInstanceOf(\mimus\tests\classes\IFooFace::class, $object);
+		}
+
+		public function testMockImplementsAlreadyBuilt() {
+			$builder = double::class(\mimus\tests\classes\NoFooFace::class);
+			$builder->implements(\mimus\tests\classes\IFooFace::class);
+
+			$this->expectException(\LogicException::class);
+
+			$builder->implements(\mimus\tests\classes\IFooFaceTwo::class);
+		}
+
+		public function testMockImplementsAlreadyRegisteredPartial() {
+			$builder = double::class(\mimus\tests\classes\NoFooFace::class);
+			$builder->implements(\mimus\tests\classes\IFooFace::class, true);
+
+			$object = $builder->getInstance();
+
+			$this->assertInstanceOf(\mimus\tests\classes\IFooFace::class, $object);
+			$this->assertTrue($object->publicMethod(false));
+			$this->assertFalse($object->publicMethod(true));
+		}
+
 		public function testPartialLogicExceptionArgs() {
 			$builder = double::class(\mimus\tests\classes\Foo::class);
 
