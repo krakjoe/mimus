@@ -349,5 +349,26 @@ namespace mimus\tests {
 
 			$this->assertTrue($object->publicMethod(true));
 		}
+
+		public function testExecutesGetsPrototype() {
+			$builder = double::class(\mimus\tests\classes\Foo::class);
+			$count   = 0;
+
+			$builder->rule("publicAcceptAndReturnFoo")
+				->expects()
+				->executes(function(\Closure $prototype, ...$args) use(&$count) {
+					$count++;
+
+					return $prototype(...$args);
+				});
+
+			$object = $builder->getInstance();
+
+			$this->assertInstanceOf(
+				\mimus\tests\classes\Foo::class, 
+				$object->publicAcceptAndReturnFoo($object));
+			
+			$this->assertSame(1, $count);			
+		}
 	}
 }

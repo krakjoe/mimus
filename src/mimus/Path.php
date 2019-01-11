@@ -223,8 +223,8 @@ namespace mimus {
 						$prototype(...$args);
 				} else {
 					$retval = $object ? 
-						$this->executes->call($object, ...$args) :
-						($this->executes)(...$args);
+						$this->executes->call($object, $prototype->bindTo($object), ...$args) :
+						($this->executes)($prototype, ...$args);
 				}
 			} catch (\Throwable $thrown) {
 				if ($this->throws) {

@@ -29,6 +29,10 @@ namespace mimus\tests\classes {
 		final public function publicFinalMethod(bool $bool) {
 			return !$bool;
 		}
+
+		public function publicAcceptAndReturnFoo(Foo $object) : Foo {
+			return $this;
+		}
 	}
 }
 ?>
