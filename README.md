@@ -381,7 +381,7 @@ namespace mimus {
 		public static function class(string $name, bool $reset = true) : Double;
 
 		/*
-		* Shall create a mock by name
+		* Shall create or return mock by name
 		* @see \Componere\Definition::__construct
 		*/
 		public static function make(string $name, mixed $args, bool $reset = true) : Double;
@@ -391,7 +391,7 @@ namespace mimus {
 		* @param name of mock
 		* @throws LogicException if mock does not exist
 		*/
-		public static function unlink(string $name);
+		public static function unlink(string $name) : void;
 
 		/*
 		* Shall check if a mock exists

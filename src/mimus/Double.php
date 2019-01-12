@@ -16,7 +16,7 @@ namespace mimus {
 			return self::definition($name, $reset, ...$args);
 		}
 
-		public static function unlink(string $name) {
+		public static function unlink(string $name) : void {
 			if (!self::exists($name)) {
 				throw new \LogicException(
 					"{$name} has not been doubled");
@@ -25,7 +25,7 @@ namespace mimus {
 			unset(self::$doubles[$name]);
 		}
 
-		public static function exists(string $name) {
+		public static function exists(string $name) : bool {
 			return isset(self::$doubles[$name]);
 		}
 
