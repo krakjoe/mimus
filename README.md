@@ -517,7 +517,9 @@ namespace mimus {
 		* @param Closure
 		* 	If no Closure is passed, the original method is allowed to execute
 		*	If a Closure is passed, it is executed in place of the original method
-		* Note: If Path::executes is not invoked, nothing will be executed for this Path
+		* Note: Closure should be function(Closure $prototype, ...$args)
+		*	Closure is bound to the correct scope before invocation
+		*	If Path::executes is not invoked, nothing will be executed for this Path
 		*/
 		public function executes(Closure $closure = null) : Path;
 		/*
@@ -527,8 +529,8 @@ namespace mimus {
 		*	match the runtime return value.
 		*	If this path does not execute, the return value is used as the
 		*	runtime return value.
-		* Note: If Path::returns is not invoked, any return is allowed for this Path
 		* @throws LogicException if this Path is void
+		* Note: If Path::returns is not invoked, any return is allowed for this Path
 		*/
 		public function returns($value) : Path;
 		/*
@@ -539,8 +541,8 @@ namespace mimus {
 		/*
 		* Shall tell mimus what this path should throw
 		* @param string the name of the exception expected
-		* Note: If Path::throws is not invoked, any exception is allowed for this Path
 		* @throws LogicException for non executable Path
+		* Note: If Path::throws is not invoked, any exception is allowed for this Path
 		*/
 		public function throws(string $class) : Path;
 
@@ -562,7 +564,7 @@ namespace mimus {
 		/*
 		* Shall tell mimus to add a validator to Path
 		* Note: Validators will be executed after all other conditions before returning,
-		*	Validators will be bound to the correct object before invokation
+		*	Validators will be bound to the correct object before invocation
 		*	Validators that return false will raise exceptions
 		*	Validators should have the prototype function($retval = null)
 		*/
