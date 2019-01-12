@@ -234,7 +234,7 @@ namespace mimus {
 			}
 		}
 
-		public static function commit() : void {
+		public function commit() : void {
 			if (!$this->definition->isRegistered()) {
 				$this->build();
 			}
