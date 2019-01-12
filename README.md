@@ -30,10 +30,12 @@ class Foo {
 }
 
 $builder = double::class(Foo::class);
+
+$object = $builder->getInstance();
 ?>
 ```
 
-At this time, the definition of ```Foo``` has been replaced with a mock, it has the same interface as ```Foo``` but none of the methods do anything - they have been stubbed: Subsequent calls to ```new Foo``` will create a test double.
+At this time, the definition of ```Foo``` has been replaced with a mock, it has the same interface as declaration ```Foo``` but none of the methods do anything - they have been stubbed: Subsequent calls to ```new Foo``` will create a test double, and ```$object``` is ```instanceof Foo```.
 
 Stubs
 =====
