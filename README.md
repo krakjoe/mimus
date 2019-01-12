@@ -363,6 +363,62 @@ var_dump($object->publicMethod());  // bool(true)
 
 The ```$object``` will be ```instanceof IFace``` with the name ```myinterfaces```.
 
+The method ```Double::implements``` can be used to add an interface to a double after construction.
+
+Traits
+======
+
+Traits are treated like copy-pastable units of code by the compiler; When there is a ```use``` in a class declaration
+the interface of the trait is pasted into the current declaration such that the declarations inline will overwrite the
+declarations in the trait.
+
+For mocks, we wants to use traits a little differently: We want to paste on top of the class declaration so that the trait
+becomes the source of truth for implementations.
+
+```php
+<?php
+require "vendor/autoload.php";
+
+use \mimus\Double as double;
+
+class Foo {
+
+	public function doesSomethingAndReturnsBool() : bool {
+		/** ... **/
+		return true;
+	}
+}
+
+trait FooDoubleMethods {
+	public function doesSomethingAndReturnsBool() : bool {
+		return false;
+	}
+}
+
+$builder = double::class(Foo::class);
+$builder->use(FooDoubleMethods::class);
+
+$builder->rule("doesSomethingAndReturnsBool")
+	->expects()
+	->executes();
+
+$object = $builder->getInstance();
+
+var_dump($object->doesSomethingAndReturnsBool()); // bool(false)
+?>
+```
+
+*Note that ```use``` does not imply that the double should be partialized.*
+
+Life Cycle of a Double
+======================
+
+The named constructors ```Double::class``` and ```Double::make``` will try to return a cached double based on the ```$name``` passed to the constructor, they may optionally ```$reset``` the double as they retrieve it.
+
+From the first call to ```Double::getInstance``` or ```Double::rule``` the class exists in the engine with exactly the ```$name``` given; Certain actions such as implementing interfaces and using traits are no longer possible and must be performed previously to these calls taking place.
+
+The class remains present until it is explicitly removed with ```Double::unlink```: When a double is removed any class which it replaced is restored to it's original implementation.
+
 API
 ===
 
