@@ -244,5 +244,24 @@ namespace mimus\tests {
 			$this->expectException(\LogicException::class);
 			double::unlink(ClassDoesNotExist::class);
 		}
+
+		public function testMockCommit() {
+			if (double::exists(\mimus\tests\classes\Foo::class))
+				double::unlink(\mimus\tests\classes\Foo::class);
+
+			$this->assertFalse(double::exists(\mimus\tests\classes\Foo::class));
+
+			$builder = 
+				double::class(\mimus\tests\classes\Foo::class)
+				->implements(\mimus\tests\classes\IFooFace::class);
+			
+			$this->assertTrue(double::exists(\mimus\tests\classes\Foo::class));
+
+			$builder->commit(\mimus\tests\classes\Foo::class);
+
+			$object = new \mimus\tests\classes\Foo;
+
+			$this->assertTrue($object instanceof \mimus\tests\classes\IFooFace);
+		}
 	}
 }

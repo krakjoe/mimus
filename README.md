@@ -486,6 +486,14 @@ namespace mimus {
 		public function partialize(string $class) : Double;
 
 		/*
+		* Shall ensure the class is available by name
+		* Note: until the first call to rule() or getInstance() the class is not registered
+		*	this method serves the case where no rule() or getInstance() call is made
+		*	in the current scope.
+		*/
+		public function commit() : void;
+
+		/*
 		* Shall create a new Rule for method
 		* @param string the name of the method
 		* @throws LogicException if the method does not exist

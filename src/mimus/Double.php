@@ -177,7 +177,7 @@ namespace mimus {
 			return $this;
 		}
 
-		public function partialize($on) {
+		public function partialize($on) : Double {
 			if (!is_array($on) && !is_string($on)) {
 				throw new \LogicException(
 					"expected an array of method names or the name of a valid class");
@@ -205,12 +205,11 @@ namespace mimus {
 						->executes();
 				}
 			}
+			return $this;
 		}
 
 		public function rule(string $name) : Rule {
-			if (!$this->definition->isRegistered()) {
-				$this->build();
-			}
+			self::commit();
 
 			if (!isset($this->table[$name])) {
 				throw new \LogicException(
@@ -219,7 +218,7 @@ namespace mimus {
 			return $this->table[$name][] = new Rule($name);
 		}
 
-		public function reset(string $name = null) {
+		public function reset(string $name = null) : void {
 			if (!$this->definition->isRegistered()) {
 				return;
 			}
@@ -235,10 +234,14 @@ namespace mimus {
 			}
 		}
 
-		public function getInstance(...$args) {
+		public static function commit() : void {
 			if (!$this->definition->isRegistered()) {
 				$this->build();
 			}
+		}
+
+		public function getInstance(...$args) {
+			self::commit();
 
 			if (!func_num_args()) {
 				return $this->reflector->newInstanceWithoutConstructor();
