@@ -387,6 +387,19 @@ namespace mimus {
 		public static function make(string $name, mixed $args, bool $reset = true) : Double;
 
 		/*
+		* Shall delete a mock by name
+		* @param name of mock
+		* @throws LogicException if mock does not exist
+		*/
+		public static function unlink(string $name);
+
+		/*
+		* Shall check if a mock exists
+		* @param name of mock
+		*/
+		public static function exists(string $name) : bool;
+
+		/*
 		* Shall implement the given interface
 		* @param name of interface
 		* @param optionally partialize on interface

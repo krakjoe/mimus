@@ -236,5 +236,13 @@ namespace mimus\tests {
 			$this->expectException(\Error::class);
 			$builder->getInstance(true);
 		}
+
+		public function testMockUnlink() {
+			$this->assertTrue(double::exists(\mimus\tests\classes\Foo::class));
+			double::unlink(\mimus\tests\classes\Foo::class);
+			$this->assertFalse(double::exists(\mimus\tests\classes\Foo::class));
+			$this->expectException(\LogicException::class);
+			double::unlink(ClassDoesNotExist::class);
+		}
 	}
 }

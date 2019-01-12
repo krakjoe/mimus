@@ -16,6 +16,19 @@ namespace mimus {
 			return self::definition($name, $reset, ...$args);
 		}
 
+		public static function unlink(string $name) {
+			if (!self::exists($name)) {
+				throw new \LogicException(
+					"{$name} has not been doubled");
+			}
+
+			unset(self::$doubles[$name]);
+		}
+
+		public static function exists(string $name) {
+			return isset(self::$doubles[$name]);
+		}
+
 		private static function definition($name, $reset, ...$args) {
 			if (!isset(Double::$doubles[$name])) {
 				double::$doubles[$name] = 
@@ -239,7 +252,7 @@ namespace mimus {
 		private $reflector;
 		private $table;
 
-		private static $doubles;
+		private static $doubles = [];
 	}
 
 	function printable($value) {
