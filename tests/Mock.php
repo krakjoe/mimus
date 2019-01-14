@@ -263,5 +263,13 @@ namespace mimus\tests {
 
 			$this->assertTrue($object instanceof \mimus\tests\classes\IFooFace);
 		}
+
+		public function testMockClear() {
+			$this->assertTrue(double::exists(\mimus\tests\classes\Foo::class));
+
+			double::clear();
+
+			$this->assertFalse(double::exists(\mimus\tests\classes\Foo::class));
+		}
 	}
 }

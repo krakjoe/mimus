@@ -29,6 +29,10 @@ namespace mimus {
 			return isset(self::$doubles[$name]);
 		}
 
+		public static function clear() : void {
+			self::$doubles = [];
+		}
+
 		private static function definition($name, $reset, ...$args) {
 			if (!isset(Double::$doubles[$name])) {
 				double::$doubles[$name] = 

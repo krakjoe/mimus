@@ -458,6 +458,11 @@ namespace mimus {
 		public static function exists(string $name) : bool;
 
 		/*
+		* Shall delete all mocks
+		*/
+		public static function clear() : void;
+
+		/*
 		* Shall implement the given interface
 		* @param name of interface
 		* @param optionally partialize on interface
