@@ -181,10 +181,15 @@ namespace mimus {
 			return $this;
 		}
 
-		public function partialize($on) : Double {
+		public function partialize($on, array $except = []) : Double {
 			if (!is_array($on) && !is_string($on)) {
 				throw new \LogicException(
 					"expected an array of method names or the name of a valid class");
+			}
+
+			if (is_array($on) && count($except)) {
+				throw new \LogicException(
+					"expected a class name and array of excluded methods");
 			}
 
 			if (is_array($on)) {
@@ -203,10 +208,12 @@ namespace mimus {
 				}
 
 				foreach ($reflector->getMethods() as $method) {
-					$this->reset($method->getName());
-					$this->rule($method->getName())
-						->expects()
-						->executes();
+					if (!count($except) || !in_array($method->getName(), $except)) {
+						$this->reset($method->getName());
+						$this->rule($method->getName())
+							->expects()
+							->executes();
+					}
 				}
 			}
 			return $this;

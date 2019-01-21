@@ -15,7 +15,11 @@
   </testsuites>
   <filter>
   <whitelist processUncoveredFilesFromWhitelist="true">
-    <directory suffix=".php">src</directory>
+    <file>src/mimus/Double.php</file>
+    <file>src/mimus/Exception.php</file>
+    <file>src/mimus/Path.php</file>
+    <file>src/mimus/Rule.php</file>
+    <file>src/mimus/Type.php</file>
     <exclude>
     </exclude>
   </whitelist>
