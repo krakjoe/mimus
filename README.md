@@ -486,9 +486,16 @@ namespace mimus {
 		public function partialize(array $methods = []) : Double;
 		
 		/*
-		* Shall turn this into a partial by allowing execution of the methods in the given class
+		* Shall turn this into a partial by allowing execution 
+		*	of the methods in the given class
 		*/
 		public function partialize(string $class) : Double;
+
+		/*
+		* Shall turn this into a partial by allowing execution 
+		*	of the methods in the given class with exceptions
+		*/
+		public function partialize(string $class, array $except = []) : Double;
 
 		/*
 		* Shall ensure the class is available by name
