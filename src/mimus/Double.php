@@ -243,10 +243,10 @@ namespace mimus {
 				foreach ($this->table as $name => $rules) {
 					$this->reset($name);
 				}
-			} else {
+			} else if (isset($this->table[$name])) {
 				foreach ($this->table[$name] as $idx => $rule) {
 					unset($this->table[$name][$idx]);
-				}		
+				}
 			}
 		}
 
