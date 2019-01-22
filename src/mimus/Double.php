@@ -64,6 +64,11 @@ namespace mimus {
 			foreach ($this->reflector->getMethods() as $prototype) {
 				$static    = $prototype->isStatic();
 				$name      = $prototype->getName();
+
+				if (!isset($closures[$name])) {
+					continue;
+				}
+
 				$closure   = $closures[$name];
 
 				$this->table[$name] = [];
