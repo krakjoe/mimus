@@ -199,10 +199,11 @@ namespace mimus {
 
 			if (is_array($on)) {
 				foreach ($on as $method) {
-					$this->reset($method);
-					$this->rule($method) /* must be first rule */
-						->expects()
-						->executes();
+					if ($this->reset($method)) {
+						$this->rule($method) /* must be first rule */
+							->expects()
+							->executes();
+					}
 				}
 			} else {
 				try {
@@ -214,10 +215,11 @@ namespace mimus {
 
 				foreach ($reflector->getMethods() as $method) {
 					if (!count($except) || !in_array($method->getName(), $except)) {
-						$this->reset($method->getName());
-						$this->rule($method->getName())
-							->expects()
-							->executes();
+						if ($this->reset($method->getName())) {
+							$this->rule($method->getName())
+								->expects()
+								->executes();
+						}
 					}
 				}
 			}
@@ -231,23 +233,30 @@ namespace mimus {
 				throw new \LogicException(
 					"method {$name} does not exist, or is whitelisted");
 			}
+
 			return $this->table[$name][] = new Rule($name);
 		}
 
-		public function reset(string $name = null) : void {
+		public function reset(string $name = null) : bool {
 			if (!$this->definition->isRegistered()) {
-				return;
+				return true;
 			}
 
 			if ($name === null) {
 				foreach ($this->table as $name => $rules) {
-					$this->reset($name);
+					if (!$this->reset($name)) {
+						return false;
+					}
 				}
+				return true;
 			} else if (isset($this->table[$name])) {
 				foreach ($this->table[$name] as $idx => $rule) {
 					unset($this->table[$name][$idx]);
 				}
+				return true;
 			}
+
+			return false;
 		}
 
 		public function commit() : void {
