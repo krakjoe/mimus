@@ -4,18 +4,8 @@
         "php": "7.*",
         "ext-componere": "^2.1.4"
     },
-    "repositories": {
-        "phpunit": {
-		"type": "vcs",
-		"url": "https://github.com/krakjoe/phpunit"	
-	},
-        "php-code-coverage": {
-		"type": "vcs",
-		"url": "https://github.com/krakjoe/php-code-coverage"	
-	}
-    },
     "require-dev": {
-        "phpunit/phpunit": "dev-pcov as 7.5.2",
+        "phpunit/phpunit": "^7.0",
         "php-coveralls/php-coveralls": "^2.1"
     },
     "autoload": {
