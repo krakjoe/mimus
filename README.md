@@ -35,7 +35,31 @@ $object = $builder->getInstance();
 ?>
 ```
 
-At this time, the definition of ```Foo``` has been replaced with a mock, it has the same interface as declaration ```Foo``` but none of the methods do anything - they have been stubbed: Subsequent calls to ```new Foo``` will create a test double, and ```$object``` is ```instanceof Foo```.
+At this time,```$object``` is ```instanceof Foo``` with the same interface as declaration ```Foo```, but none of it's methods do anything - they have been stubbed.
+
+It's important to note that while mimus supports a familiar pattern (```getInstance```) to allow injecting dependencies, __mimus has replaced the declaration of ```Foo``` internally__, so that subsequent calls to ```new Foo``` will create a test double, making the code above and the following code functionally equivalent:
+
+```php
+<?php
+require "vendor/autoload.php";
+
+use \mimus\Double as double;
+
+class Foo {
+
+	public function doesSomethingAndReturnsBool() : bool {
+		/** ... **/
+		return true;
+	}
+}
+
+$builder = double::class(Foo::class);
+
+$object = new Foo();
+?>
+```
+
+Given that ```Foo`` was already declared when ```double::class``` was called, this behaviour is impossible to achieve in userland PHP alone: This is the reason that mimus must depend on Componere, and is one of the main differences between mimus and any other mocking framwork for PHP.
 
 Stubs
 =====
