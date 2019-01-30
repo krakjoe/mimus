@@ -563,7 +563,7 @@ namespace mimus {
 		* @param Closure
 		* 	If no Closure is passed, the original method is allowed to execute
 		*	If a Closure is passed, it is executed in place of the original method
-		* Note: Closure should be function(Closure $prototype, ...$args)
+		* Note: Closure should be compatible with function(Closure $prototype, ...$args)
 		*	Closure is bound to the correct scope before invocation
 		*	If Path::executes is not invoked, nothing will be executed for this Path
 		*/
