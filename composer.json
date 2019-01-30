@@ -1,7 +1,7 @@
 {
     "name": "krakjoe/mimus",
     "require": {
-        "php": "7.*",
+        "php": "^7.1",
         "ext-componere": "^2.1.4"
     },
     "require-dev": {
