@@ -59,7 +59,7 @@ $object = new Foo();
 ?>
 ```
 
-Given that ```Foo`` was already declared when ```double::class``` was called, this behaviour is impossible to achieve in userland PHP alone: This is the reason that mimus must depend on Componere, and is one of the main differences between mimus and any other mocking framwork for PHP.
+Given that ```Foo``` was already declared when ```double::class``` was called, this behaviour is impossible to achieve in userland PHP alone: This is the reason that mimus must depend on Componere, and is one of the main differences between mimus and any other mocking framwork for PHP.
 
 Stubs
 =====
