@@ -271,5 +271,13 @@ namespace mimus\tests {
 
 			$this->assertFalse(double::exists(\mimus\tests\classes\Foo::class));
 		}
+
+		public function testMockDefines() {
+			$builder = double::class(\mimus\tests\classes\Foo::class);
+			$builder->defines("BAR", 42);
+			$builder->commit();
+
+			$this->assertSame(\mimus\tests\classes\Foo::BAR, 42);
+		}
 	}
 }
