@@ -226,6 +226,17 @@ namespace mimus {
 			return $this;
 		}
 
+		public function defines(string $name, $value) : Double {
+			if ($this->reflector->hasConstant($name)) {
+				$this->definition->setConstant(
+					$name, new \Componere\Value($value));
+			} else {
+				$this->definition->addConstant(
+					$name, new \Componere\Value($value));
+			}
+			return $this;
+		}
+
 		public function rule(string $name) : Rule {
 			self::commit();
 
