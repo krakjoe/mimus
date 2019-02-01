@@ -276,7 +276,7 @@ namespace mimus {
 			}
 		}
 
-		public function getInstance(...$args) {
+		public function getInstance(...$args) : object {
 			self::commit();
 
 			if (!func_num_args()) {

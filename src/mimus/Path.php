@@ -181,7 +181,7 @@ namespace mimus {
 			}
 		}
 
-		private function verifyValidators($object, $retval = null) {
+		private function verifyValidators(?object $object, $retval = null) : void {
 			$except = null;
 
 			if (!$this->validators) {
@@ -204,7 +204,7 @@ namespace mimus {
 				throw $except;
 		}
 
-		public function travel($object, \Closure $prototype, ...$args) {
+		public function travel(?object $object, \Closure $prototype, ...$args) {
 			$retval = null;
 			$thrown = null;
 			if ($this->limit !== false) {
