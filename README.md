@@ -54,6 +54,7 @@ class Foo {
 }
 
 $builder = double::class(Foo::class);
+$builder->commit(); /* would be committed on getInstance() or rule() */
 
 $object = new Foo();
 ?>
