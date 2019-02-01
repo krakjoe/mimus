@@ -23,7 +23,6 @@ before_install:
   - echo "opcache.optimization_level=0"         >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
   - echo "opcache.enable_cli=$OPCACHE"          >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
   - pecl install pcov
-  - echo "extension=pcov.so"                    >  $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/pcov.ini
   - cd $TRAVIS_BUILD_DIR
 
 install:
