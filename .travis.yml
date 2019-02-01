@@ -9,10 +9,6 @@ env:
     - OPCACHE=0
     - OPCACHE=1
 
-cache:
-  directories:
-    - .composer/cache
-
 before_install:
   - alias composer=composer\ -n && composer self-update
   - git clone https://github.com/krakjoe/componere $HOME/componere
@@ -26,10 +22,11 @@ before_install:
   - echo                                        >  $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
   - echo "opcache.optimization_level=0"         >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
   - echo "opcache.enable_cli=$OPCACHE"          >> $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/opcache.ini
+  - pecl install pcov
+  - echo "extension=pcov.so"                    >  $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/pcov.ini
   - cd $TRAVIS_BUILD_DIR
 
 install:
-  - pecl install pcov
   - composer install
 
 before_script:
