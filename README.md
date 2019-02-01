@@ -7,7 +7,7 @@ mimus
 Requirements
 ============
 
-  * PHP 7.1+
+  * PHP 7.2+
   * [Componere](https://github.com/krakjoe/componere)
 
 Doubles
