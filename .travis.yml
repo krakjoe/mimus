@@ -29,13 +29,14 @@ before_install:
   - cd $TRAVIS_BUILD_DIR
 
 install:
+  - pecl install pcov
   - composer install
 
 before_script:
   - mkdir -p build/logs
 
 script:
-  - phpdbg -qrr vendor/bin/phpunit --coverage-text --coverage-clover=build/logs/clover.xml
+  - php vendor/bin/phpunit --coverage-text --coverage-clover=build/logs/clover.xml
 
 after_success:
   - vendor/bin/php-coveralls -v
