@@ -2,11 +2,11 @@
 namespace mimus\tests {
 
     use mimus\tests\classes\FooBar;
-	use \mimus\Double as double;
+    use \mimus\Double as double;
 
 	final class UnlinkTest extends \PHPUnit\Framework\TestCase {
 
-		public function testUnlink() {
+        public function testUnlink() {
 
         $fb = new FooBar();
 
@@ -25,6 +25,6 @@ namespace mimus\tests {
         var_dump(double::exists(FooBar::class));
         $this->assertEquals('bar', $fb->bar());
 
-		}
-	}
+        }
+    }
 }

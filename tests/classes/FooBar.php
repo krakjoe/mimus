@@ -1,11 +1,10 @@
 <?php
 namespace mimus\tests\classes;
 
-	class FooBar
+class FooBar
+{
+    public function bar()
     {
-        public function bar()
-        {
-            return 'bar';
-        }
-
-	}
+        return 'bar';
+    }
+}
