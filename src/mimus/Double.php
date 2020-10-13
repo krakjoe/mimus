@@ -61,15 +61,10 @@ namespace mimus {
 		private function build() {
 			$closures = $this->definition->getClosures();
 
-			foreach ($this->reflector->getMethods() as $prototype) {
+			foreach ($closures as $name => $closure) {
+				$prototype = $this->reflector->getMethod($name);
 				$static    = $prototype->isStatic();
-				$name      = $prototype->getName();
 
-				if (!isset($closures[$name])) {
-					continue;
-				}
-
-				$closure   = $closures[$name];
 
 				$this->table[$name] = [];
 
@@ -253,18 +248,20 @@ namespace mimus {
 				return true;
 			}
 
-			if ($name === null) {
-				foreach ($this->table as $name => $rules) {
-					if (!$this->reset($name)) {
-						return false;
+			if ($this->table) {
+				if ($name === null) {
+					foreach ($this->table as $name => $rules) {
+						if (!$this->reset($name)) {
+							return false;
+						}
 					}
+					return true;
+				} else if (isset($this->table[$name])) {
+					foreach ($this->table[$name] as $idx => $rule) {
+						unset($this->table[$name][$idx]);
+					}
+					return true;
 				}
-				return true;
-			} else if (isset($this->table[$name])) {
-				foreach ($this->table[$name] as $idx => $rule) {
-					unset($this->table[$name][$idx]);
-				}
-				return true;
 			}
 
 			return false;
