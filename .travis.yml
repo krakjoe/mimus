@@ -28,7 +28,7 @@ before_install:
   - cd $TRAVIS_BUILD_DIR
 
 install:
-  - composer install
+  - composer install --ignore-platform-reqs
 
 before_script:
   - mkdir -p build/logs
